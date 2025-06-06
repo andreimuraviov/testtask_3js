@@ -1,0 +1,19 @@
+{
+  "name": "testtask",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreimuraviov/testtask_3js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andreimuraviov/testtask_3js/issues"
+  },
+  "homepage": "https://github.com/andreimuraviov/testtask_3js#readme",
+  "description": ""
+}
