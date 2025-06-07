@@ -1,0 +1,14 @@
+.controls-panel {
+	width: 350px;
+	overflow: auto;
+
+	border: 1px solid #ccc;
+	/* border-radius: 10px; */
+	background-color: #eee;
+}
+
+.controls-panel-content {
+	padding: 20px 20px 40px;
+	width: 330px;
+	margin: 0 auto;
+}
