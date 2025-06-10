@@ -6,13 +6,28 @@ export function initScene(sceneElement) {
 	const width = sceneElement.offsetWidth;
 	const height = sceneElement.offsetHeight;
 
-	const camera = new THREE.PerspectiveCamera( 60, width / height, 0.01, 10 );
-	camera.position.z = 3;
+	const camera = new THREE.PerspectiveCamera( 60, width / height, 0.01, 100 );
+	camera.position.x = -5;
+	camera.position.y = 5;
+	camera.position.z = 5;
+
+	camera.layers.enableAll();
 
 	const scene = new THREE.Scene();
+	scene.background = new THREE.Color().setRGB( 0.25, 0.27, 0.3 );
 
-	const axesHelper = new THREE.AxesHelper( 1 );
-	scene.add( axesHelper );
+	const groups = [
+		'floor',
+		'walls',
+		'coversInside',
+		'coversOutside'
+	];
+
+	for (let groupName of groups) {
+		const group = new THREE.Group();
+		group.name = groupName;
+		scene.add(group);
+	}
 
 	const renderer = new THREE.WebGLRenderer( { antialias: true } );
 	renderer.setSize( width, height );
@@ -21,12 +36,12 @@ export function initScene(sceneElement) {
 	window.addEventListener('resize', e => {
 		camera.aspect = sceneElement.offsetWidth / sceneElement.offsetHeight;
 		camera.updateProjectionMatrix();
-		
+
 		renderer.setSize( sceneElement.offsetWidth, sceneElement.offsetHeight);
 	});
 
 	const controls = new OrbitControls(camera, renderer.domElement);
-	controls.maxPolarAngle = Math.PI * 0.50;
+	controls.maxPolarAngle = Math.PI * 0.40;
 	controls.update();
 
 	function animate() {

@@ -1,5 +1,11 @@
-export function texturesControl({labelName = '', labelTitle = '', items = []}) {
+import { appState } from '../../state/app.js';
 
+export function texturesControl({
+	labelName, 
+	labelTitle,
+	roomValue,
+	items = []
+}) {
 	const label = document.createElement('label');
 	label.setAttribute('for', labelName);
 	label.classList.add('form-label');
@@ -12,16 +18,13 @@ export function texturesControl({labelName = '', labelTitle = '', items = []}) {
 	select.setAttribute('id', labelName);
 	select.setAttribute('class', 'form-select form-select-sm');
 
-	let i = 0;
-	
 	for (let item of items) {
 		const option = document.createElement('option');
 		option.setAttribute('value', item.value);
-		if (i = 0) {
-			option.setAttribute('selected', true);
-			i++;
-		}
 		option.innerText = item.text;
+		if (item.default) {
+			option.setAttribute('selected', 'selected');
+		}
 		select.appendChild(option);
 	}
 
@@ -29,6 +32,10 @@ export function texturesControl({labelName = '', labelTitle = '', items = []}) {
 	button.setAttribute('type', 'button');
 	button.setAttribute('class', 'btn btn-primary btn-sm');
 	button.innerHTML = 'Применить';
+
+	button.addEventListener('click', () => {
+		appState[roomValue] = select.value;
+	});
 
 	group.append(select, button);	
 

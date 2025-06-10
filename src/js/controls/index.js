@@ -2,6 +2,8 @@ import { texturesControl } from "./components/texturesControl.js";
 import { wallParameterControl } from "./components/wallParameterControl.js";
 import { importExportControl } from "./components/importExportControl.js";
 
+import { appState } from "../state/app.js";
+
 export function controlsSection (config) {
 	const { textures, wallParams} = config;
 
@@ -18,6 +20,7 @@ export function controlsSection (config) {
 		const control = texturesControl({
 			labelName: key,
 			labelTitle: textures[key].title,
+			roomValue: textures[key].roomValue,
 			items: textures[key].items,
 		});
 		control.classList.add('mb-4');
@@ -35,6 +38,7 @@ export function controlsSection (config) {
 		const control = wallParameterControl({
 			labelName: key,
 			labelTitle: wallParams[key].title,
+			roomValue: wallParams[key].roomValue,
 		});
 		control.classList.add('mb-3');
 		controlsSection.appendChild(control);

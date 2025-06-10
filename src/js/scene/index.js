@@ -1,14 +1,13 @@
-import { createHtmlElement } from "./components/createHtml.js";
 import { initScene } from "./components/initScene.js";
-import { addBox } from "./components/addBox.js";
+import { buildRoom } from './components/roomBuilder.js';
 
-export function createScene (sceneElement) {
+import { appState } from '../state/app.js';
 
-	const roomSceneElement = createHtmlElement(sceneElement);
+export function roomBuilder (sceneElement) {
+	const scene = initScene(sceneElement);
 
-	setTimeout(() => {
-		const scene = initScene(roomSceneElement);
+	appState.scene = scene;
+	appState.buildRoom = buildRoom;
 
-		addBox(scene);
-	}, 0);
+	appState.buildRoom();
 }

@@ -1,5 +1,10 @@
-export function wallParameterControl({labelName = '', labelTitle = ''}) {
+import { appState } from '../../state/app.js';
 
+export function wallParameterControl({
+	labelName, 
+	labelTitle, 
+	roomValue
+}) {
 	const label = document.createElement('label');
 	label.setAttribute('for', labelName);
 	label.classList.add('form-label');
@@ -12,7 +17,7 @@ export function wallParameterControl({labelName = '', labelTitle = ''}) {
 		'id': labelName,
 		'type': 'number',
 		'min': '1',
-		'placeholder': '1',
+		'value': appState[roomValue],
 		'className': 'form-control form-control-sm',
 	});
 
@@ -20,6 +25,10 @@ export function wallParameterControl({labelName = '', labelTitle = ''}) {
 	button.setAttribute('type', 'button');
 	button.setAttribute('class', 'btn btn-primary btn-sm');
 	button.innerHTML = 'Применить';
+
+	button.addEventListener('click', () => {
+		appState[roomValue] = input.value;
+	});
 
 	group.appendChild(input);
 	group.appendChild(button);
