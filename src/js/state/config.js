@@ -65,6 +65,10 @@ export default {
 					"text": "Паркет",
 					"value": "/textures/floor/2.jpg",
 					"default": true,
+				},
+				{
+					"text": "Ламинат",
+					"value": "/textures/floor/4.jpg",
 				}
 			]
 		}

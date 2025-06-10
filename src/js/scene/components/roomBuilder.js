@@ -22,7 +22,7 @@ export function buildRoom () {
 	const floor = addFloor({
 		sizeX: appState.normalize(roomSizeX),
 		sizeY: appState.normalize(roomSizeY),
-		coverUrl: appState.coverUrlFloor
+		texture: appState.textures['floor'].texture
 	});
 
 	// Text
@@ -35,6 +35,7 @@ export function buildRoom () {
 		wallLength: appState.normalize(roomSizeY),
 		wallHeight: appState.normalize(roomHeight),
 		wallThickness: appState.normalize(wallThickness),
+		texture: appState.textures['walls'].texture
 	});
 
 	wallShortLeft.rotation.y = 0 - Math.PI * 0.5;
@@ -53,6 +54,7 @@ export function buildRoom () {
 		wallLength: appState.normalize(roomSizeX),
 		wallHeight: appState.normalize(roomHeight),
 		wallThickness: appState.normalize(wallThickness),
+		texture: appState.textures['walls'].texture
 	});
 
 	wallLongLeft.position.set(0, 0, 0 - appState.normalize(roomSizeY) * 0.5);
@@ -69,7 +71,7 @@ export function buildRoom () {
 	const cover1 = addWallCover({
 		sizeX: appState.normalize(roomSizeX), 
 		sizeY: appState.normalize(roomHeight), 
-		coverUrl: appState.coverUrlInside
+		texture: appState.textures.coversInside.texture
 	});
 	cover1.position.z = 0 - appState.normalize(roomSizeY) * 0.499;
 
@@ -80,7 +82,7 @@ export function buildRoom () {
 	const cover3 = addWallCover({
 		sizeX: appState.normalize(roomSizeY), 
 		sizeY: appState.normalize(roomHeight), 
-		coverUrl: appState.coverUrlInside
+		texture: appState.textures.coversInside.texture
 	});
 	cover3.rotation.y = Math.PI * 0.5;
 	cover3.position.x = 0 - appState.normalize(roomSizeX) * 0.499;
@@ -93,7 +95,7 @@ export function buildRoom () {
 	const cover5 = addWallCover({
 		sizeX: appState.normalize(roomSizeX) + appState.normalize(wallThickness) * 2, 
 		sizeY: appState.normalize(roomHeight), 
-		coverUrl: appState.coverUrlOutside
+		texture: appState.textures.coversOutside.texture
 	});
 	cover5.position.z = appState.normalize(wallThickness) + appState.normalize(roomSizeY) * 0.501;
 
@@ -104,7 +106,7 @@ export function buildRoom () {
 	const cover7 = addWallCover({
 		sizeX: appState.normalize(roomSizeY) + appState.normalize(wallThickness) * 2, 
 		sizeY: appState.normalize(roomHeight), 
-		coverUrl: appState.coverUrlOutside
+		texture: appState.textures.coversOutside.texture
 	});
 	cover7.rotation.y = Math.PI * 0.5;
 	cover7.position.x = appState.normalize(wallThickness) + appState.normalize(roomSizeX) * 0.501;

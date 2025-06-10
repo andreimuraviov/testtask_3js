@@ -1,9 +1,6 @@
 import * as THREE from 'three';
 
-export function addFloor({sizeX, sizeY, coverUrl}) {
-	const textureLoader = new THREE.TextureLoader();
-	const texture = textureLoader.load(coverUrl);
-
+export function addFloor({sizeX, sizeY, texture}) {
 	const geometry = new THREE.PlaneGeometry( sizeX, sizeY );
 	const material = new THREE.MeshBasicMaterial({ map: texture });
 

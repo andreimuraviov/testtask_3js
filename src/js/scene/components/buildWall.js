@@ -3,7 +3,8 @@ import * as THREE from 'three';
 export function buildWall({
 	wallLength = 2, 
 	wallHeight = 1, 
-	wallThickness = 0.1
+	wallThickness = 0.1,
+	texture
 }) {
 
 	// const vertices = new Float32Array([
@@ -84,9 +85,6 @@ export function buildWall({
 	geometry.setIndex( new THREE.BufferAttribute(indices, 1));
 	geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
 	geometry.setAttribute( 'uv', new THREE.BufferAttribute( uv, 2 ) );
-
-	const textureLoader = new THREE.TextureLoader();
-	const texture = textureLoader.load('/textures/walls/4.jpg');
 
 	const material = new THREE.MeshBasicMaterial({ map: texture });
 	const mesh = new THREE.Mesh( geometry, material );
