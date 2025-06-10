@@ -86,7 +86,7 @@ export function buildWall({
 	geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
 	geometry.setAttribute( 'uv', new THREE.BufferAttribute( uv, 2 ) );
 
-	const material = new THREE.MeshBasicMaterial({ map: texture });
+	const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 1 });
 	const mesh = new THREE.Mesh( geometry, material );
 
 	return mesh;

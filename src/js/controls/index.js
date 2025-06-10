@@ -2,8 +2,6 @@ import { texturesControl } from "./components/texturesControl.js";
 import { wallParameterControl } from "./components/wallParameterControl.js";
 import { importExportControl } from "./components/importExportControl.js";
 
-import { appState } from "../state/app.js";
-
 export function controlsSection (config) {
 	const { textures, wallParams} = config;
 

@@ -54,10 +54,9 @@ class ApplicationState {
 
 	clearScene() {
 		if (this.scene) {
-			this.scene.getObjectByName('floor') && this.scene.getObjectByName('floor').clear()
-			this.scene.getObjectByName('coversInside') && this.scene.getObjectByName('coversInside').clear()
-			this.scene.getObjectByName('coversOutside') && this.scene.getObjectByName('coversOutside').clear()
-			this.scene.getObjectByName('walls') && this.scene.getObjectByName('walls').clear()
+			for (let group of ['floor', 'coversInside', 'coversOutside', 'walls', 'higlighter']) {
+				this.scene.getObjectByName(group) && this.scene.getObjectByName(group).clear();
+			}
 		}
 	}
 
@@ -70,7 +69,7 @@ class ApplicationState {
 
 		if (this._roomHeight !== numericValue) {
 			this._roomHeight = numericValue;
-			this.clearScene()
+			this.clearScene();
 			this.buildRoom();
 		}
 	}
@@ -123,17 +122,20 @@ class ApplicationState {
 
 	buildRoom() {}
 
+	resetHighlighting() {}
+
 	getTextureLoader() {
 		return this.textureLoader || new THREE.TextureLoader();
 	}
 
 	updateWallCovers(layer, value) {
+		this.resetHighlighting();
 		if (value) {
 			const textureLoader = this.getTextureLoader();
 			this.textures[layer].texture = textureLoader.load(value);
-			const material = new THREE.MeshBasicMaterial({ map: this.textures[layer].texture });
+			const material = new THREE.MeshBasicMaterial({ map: this.textures[layer].texture, transparent: true, opacity: 1 });
 			this.scene.getObjectByName(layer).children.forEach(item => {
-				item.material = material;
+				item.material = material.clone();
 			});
 		}
 	}
@@ -142,9 +144,9 @@ class ApplicationState {
 		const layer = Object.keys(this.textures).find(item => this.textures[item].type === type);
 		this.textures[layer].texture = new THREE.Texture(image);
 		this.textures[layer].texture.needsUpdate = true;
-		const material = new THREE.MeshBasicMaterial({ map: this.textures[layer].texture });
+		const material = new THREE.MeshBasicMaterial({ map: this.textures[layer].texture, transparent: true, opacity: 1 });
 		this.scene.getObjectByName(layer).children.forEach(item => {
-			item.material = material;
+			item.material = material.clone();
 		});
 	}
 }
