@@ -48,13 +48,7 @@ class ApplicationState {
 	loadTextures() {
 		for (let key of Object.keys(this.textures)) {
 			const textureLoader = this.getTextureLoader();
-			// this.textures[key].texture = textureLoader.load(this.textures[key].value || this.textures[key].src);
-			if (this.textures[key].src) {
-				this.textures[key].texture = textureLoader.load(this.textures[key].src);
-			} else {
-				this.textures[key].texture = textureLoader.load(this.textures[key].value);
-			}
-
+			this.textures[key].texture = textureLoader.load(this.textures[key].value || this.textures[key].src);
 		};
 	}
 
