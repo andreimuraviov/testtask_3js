@@ -1,6 +1,7 @@
 import * as THREE from 'three';
+import { addText } from "./addText.js";
 
-export function addFloor({sizeX, sizeY, texture}) {
+export function addFloor({sizeX, sizeY, texture, text}) {
 	const geometry = new THREE.PlaneGeometry( sizeX, sizeY );
 	const material = new THREE.MeshBasicMaterial({ map: texture });
 
@@ -10,6 +11,8 @@ export function addFloor({sizeX, sizeY, texture}) {
 	floor.position.y = 0;
 
 	floor.name = 'floor';
+
+	addText(text, floor);
 	
 	return floor;
 }

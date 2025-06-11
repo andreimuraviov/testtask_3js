@@ -18,8 +18,9 @@ export function addText(str, parent) {
 
 		geometry.computeBoundingBox();
 
-		text.position.x = 0 - (geometry.boundingBox.max.x - geometry.boundingBox.min.x) * 0.5;
-		text.position.y = 0 - (geometry.boundingBox.max.y - geometry.boundingBox.min.y) * 0.5;
+		for (let coordinate of ['x', 'y']) {
+			text.position[coordinate] = 0 - (geometry.boundingBox.max[coordinate] - geometry.boundingBox.min[coordinate]) * 0.5;
+		}
 
 		text.name = 'text';
 

@@ -3,8 +3,6 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import { addFloor } from "./addFloor.js";
 import { buildWall } from "./buildWall.js";
 import { addWallCover } from "./addWallCover.js";
-import { addText } from "./addText.js";
-
 import { appState } from '../../state/app.js';
 
 export function buildRoom () {
@@ -22,12 +20,9 @@ export function buildRoom () {
 	const floor = addFloor({
 		sizeX: appState.normalize(roomSizeX),
 		sizeY: appState.normalize(roomSizeY),
-		texture: appState.textures['floor'].texture
+		texture: appState.textures['floor'].texture,
+		text: `${roomSizeX * roomSizeY * 0.0001} м²`
 	});
-
-	// Text
-
-	addText(`${roomSizeX * roomSizeY * 0.0001} м²`, floor);
 
 	// Wall 1
 
