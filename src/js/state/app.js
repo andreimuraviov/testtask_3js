@@ -143,10 +143,17 @@ class ApplicationState {
 		if (value) {
 			const textureLoader = this.getTextureLoader();
 			this.textures[layer].src = undefined;
-			this.textures[layer].texture = textureLoader.load(value);
-			const material = new THREE.MeshBasicMaterial({ map: this.textures[layer].texture, transparent: true, opacity: 1 });
-			this.scene.getObjectByName(layer).children.forEach(item => {
-				item.material = material.clone();
+			textureLoader.load(value, texture => {
+				this.textures[layer].texture = texture;
+				const material = new THREE.MeshBasicMaterial({ 
+					map: texture, 
+					transparent: true, 
+					opacity: 1 
+				});
+				this.scene.getObjectByName(layer).children.forEach(item => {
+					item.material = material.clone();
+				});
+
 			});
 		}
 	}
