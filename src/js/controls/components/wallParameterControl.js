@@ -27,11 +27,19 @@ export function wallParameterControl({
 	button.innerHTML = 'Применить';
 
 	button.addEventListener('click', () => {
+		if (Number(input.value) < 1) {
+			return;
+		}
 		appState[roomValue] = input.value;
 	});
 
-	group.appendChild(input);
-	group.appendChild(button);
+	group.append(input, button);
+
+	input.addEventListener('keyup', ({ key }) => {
+    	if (key === "Enter") {
+			button.click();
+		}
+	});
 
 	const controlElement = document.createElement('div');
 	controlElement.append(label, group);
