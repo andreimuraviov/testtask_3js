@@ -24,6 +24,10 @@ export function buildRoom () {
 		text: `${roomSizeX * roomSizeY * 0.0001} м²`
 	});
 
+	const ceiling = SkeletonUtils.clone(floor);
+	ceiling.rotation.x = Math.PI * 0.5;
+	ceiling.position.set(0, appState.normalize(roomHeight), 0);
+
 	// Wall 1
 
 	const wallShortLeft = buildWall({
@@ -125,7 +129,7 @@ export function buildRoom () {
 	cover8.name = 'W';
 
 	// Add to scene
-	scene.getObjectByName('floor').add( floor );
+	scene.getObjectByName('floor').add( floor, ceiling );
 	scene.getObjectByName('coversInside').add( cover1, cover2, cover3, cover4 );
 	scene.getObjectByName('coversOutside').add( cover5, cover6, cover7, cover8 );
 	scene.getObjectByName('walls').add( wallShortLeft, wallShortRight, wallLongLeft, wallLongRight );
