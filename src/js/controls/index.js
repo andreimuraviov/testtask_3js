@@ -5,12 +5,15 @@ import { exportImportControl } from "./components/exportImportControl.js";
 export function controlsSection (config) {
 	const { textures, wallParams} = config;
 
+	const headerTag = 'h4';
+
 	const controlsSection = document.createElement('div');
 	controlsSection.setAttribute('class', 'controls-panel-content');
 
 	// Текстуры
 	
-	const texturesHeading = document.createElement('h5');
+	const texturesHeading = document.createElement(headerTag);
+	texturesHeading.setAttribute('class', 'mb-3');
 	texturesHeading.innerHTML = 'Текстуры';
 	controlsSection.appendChild(texturesHeading);
 
@@ -27,8 +30,8 @@ export function controlsSection (config) {
 
 	// Параметры стен
 
-	const wallParamsHeading = document.createElement('h5');
-	wallParamsHeading.setAttribute('class', 'mt-5');
+	const wallParamsHeading = document.createElement(headerTag);
+	wallParamsHeading.setAttribute('class', 'mt-5 mb-3');
 	wallParamsHeading.innerHTML = 'Параметры стен';
 	controlsSection.appendChild(wallParamsHeading);
 
@@ -44,7 +47,7 @@ export function controlsSection (config) {
 
 	// Импорт/экспорт
 
-	const importExportHeading = document.createElement('h5');
+	const importExportHeading = document.createElement(headerTag);
 	importExportHeading.setAttribute('class', 'mt-5 mb-3');
 	importExportHeading.innerHTML = 'Импорт / экспорт';
 
