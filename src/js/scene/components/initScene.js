@@ -55,6 +55,8 @@ export function initScene(sceneElement) {
 
 	const controls = new OrbitControls(camera, renderer.domElement);
 	controls.maxPolarAngle = Math.PI * 0.45;
+	controls.maxDistance = 15;
+	controls.minDistance = 1.5;
 	controls.update();
 
 	function tick() {
@@ -70,7 +72,7 @@ export function initScene(sceneElement) {
 	const raycaster = new THREE.Raycaster();
 
 	sceneElement.addEventListener('mousedown', (e) => {
-		resetHighlighting();
+		appState.resetHighlighting();
 
 		mouse.x = e.offsetX / canvasSize.width * 2 - 1;
 		mouse.y = 0 - e.offsetY / canvasSize.height * 2 + 1;
@@ -81,39 +83,9 @@ export function initScene(sceneElement) {
 		const intersects = raycaster.intersectObjects(objectsToTest);
 
 		if (intersects.length) {
-			setHighlighting(intersects[0].object);
+			appState.setHighlighting(intersects[0].object);
 		}
 	})
-
-	function setHighlighting(wall) {
-		const edges = new THREE.EdgesGeometry( wall.geometry ); 
-		const lines = new THREE.LineSegments(edges, new THREE.LineBasicMaterial( { linewidth: 1, color: 0x0d6efd } ) );
-		lines.name = wall.name;
-		lines.position.set(wall.position.x, wall.position.y, wall.position.z);
-		lines.setRotationFromEuler(wall.rotation);
-		lines.scale.set(1.001, 1.001, 1.001);
-		scene.getObjectByName('higlighter').add( lines );
-
-		wall.material.opacity = 0.5;
-		for (const group of ['coversOutside', 'coversInside']) {
-			scene.getObjectByName(group).getObjectByName(wall.name).material.opacity = 0.5;	
-		}
-	}
-
-	function resetHighlighting() {
-		let highlightSide = '';
-		const highlightGroup = scene.getObjectByName('higlighter');
-
-		if (highlightGroup.children.length > 0) {
-			highlightSide = highlightGroup.children[0].name;
-			for (const group of ['walls', 'coversOutside', 'coversInside']) {
-				scene.getObjectByName(group).getObjectByName(highlightSide).material.opacity = 1;	
-			}
-			scene.getObjectByName('higlighter').clear();
-		}
-	}
-
-	appState.resetHighlighting = resetHighlighting;
 
 	return scene;
 }

@@ -217,6 +217,36 @@ class ApplicationState {
 		options);
 	}
 
+	setHighlighting(wall) {
+		const scene = this.scene;
+		const edges = new THREE.EdgesGeometry( wall.geometry ); 
+		const lines = new THREE.LineSegments(edges, new THREE.LineBasicMaterial( { linewidth: 1, color: 0x0d6efd } ) );
+		lines.name = wall.name;
+		lines.position.set(wall.position.x, wall.position.y, wall.position.z);
+		lines.setRotationFromEuler(wall.rotation);
+		lines.scale.set(1.001, 1.001, 1.001);
+		scene.getObjectByName('higlighter').add( lines );
+
+		wall.material.opacity = 0.5;
+		for (const group of ['coversOutside', 'coversInside']) {
+			scene.getObjectByName(group).getObjectByName(wall.name).material.opacity = 0.5;	
+		}
+	}
+
+	resetHighlighting() {
+		const scene = this.scene;
+		let highlightSide = '';
+		const highlightGroup = scene.getObjectByName('higlighter');
+
+		if (highlightGroup.children.length > 0) {
+			highlightSide = highlightGroup.children[0].name;
+			for (const group of ['walls', 'coversOutside', 'coversInside']) {
+				scene.getObjectByName(group).getObjectByName(highlightSide).material.opacity = 1;	
+			}
+			scene.getObjectByName('higlighter').clear();
+		}
+	}
+
 }
 
 const appState = new ApplicationState(config);
