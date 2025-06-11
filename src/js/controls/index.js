@@ -25,12 +25,12 @@ export function controlsSection (config) {
 		controlsSection.appendChild(control);
 	}
 
+	// Параметры стен
+
 	const wallParamsHeading = document.createElement('h5');
 	wallParamsHeading.setAttribute('class', 'mt-5');
-	wallParamsHeading.innerHTML = 'Параметры стены';
+	wallParamsHeading.innerHTML = 'Параметры стен';
 	controlsSection.appendChild(wallParamsHeading);
-
-	// Параметры стены
 
 	for (let key of Object.keys(wallParams)) {
 		const control = wallParameterControl({

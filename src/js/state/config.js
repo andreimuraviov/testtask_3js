@@ -14,11 +14,11 @@ export default {
 				{
 					"text": "Бетонная штукатурка",
 					"value": "/textures/outside/1.jpg",
+					"default": true,
 				},
 				{
 					"text": "Кирпичная кладка",
 					"value": "/textures/outside/2.jpg",
-					"default": true,
 				},
 				{
 					"text": "Беленая вагонка",
