@@ -139,7 +139,7 @@ class ApplicationState {
 			this.textures[layer].src = undefined;
 			textureLoader.load(value, texture => {
 				this.textures[layer].texture = texture;
-				const material = new THREE.MeshBasicMaterial({ 
+				const material = new THREE.MeshStandardMaterial({ 
 					map: texture, 
 					transparent: true, 
 					opacity: 1 
@@ -157,7 +157,7 @@ class ApplicationState {
 		this.textures[layer].src = image.getAttribute('src');
 		this.textures[layer].texture = new THREE.Texture(image);
 		this.textures[layer].texture.needsUpdate = true;
-		const material = new THREE.MeshBasicMaterial({ map: this.textures[layer].texture, transparent: true, opacity: 1 });
+		const material = new THREE.MeshStandardMaterial({ map: this.textures[layer].texture, transparent: true, opacity: 1 });
 		this.scene.getObjectByName(layer).children.forEach(item => {
 			item.material = material.clone();
 		});

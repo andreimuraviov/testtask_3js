@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { addGround } from './addGround.js';
 
 import { appState } from '../../state/app.js';
+import { addLight } from './addLight.js';
 
 export function initScene(sceneElement) {
 
@@ -17,6 +19,9 @@ export function initScene(sceneElement) {
 
 	const scene = new THREE.Scene();
 	scene.background = new THREE.Color().setRGB( 0.25, 0.27, 0.3 );
+
+	addLight(scene);
+	addGround(scene);
 
 	const groups = [
 		'floor',
@@ -34,6 +39,8 @@ export function initScene(sceneElement) {
 
 	const renderer = new THREE.WebGLRenderer( { antialias: true } );
 	renderer.setSize( width, height );
+	renderer.shadowMap.enabled = true;
+
 	sceneElement.appendChild( renderer.domElement );
 
 	window.addEventListener('resize', e => {
@@ -47,7 +54,7 @@ export function initScene(sceneElement) {
 	});
 
 	const controls = new OrbitControls(camera, renderer.domElement);
-	controls.maxPolarAngle = Math.PI * 0.40;
+	controls.maxPolarAngle = Math.PI * 0.45;
 	controls.update();
 
 	function tick() {

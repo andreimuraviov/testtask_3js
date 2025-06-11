@@ -25,6 +25,7 @@ export function buildRoom () {
 	});
 
 	const ceiling = SkeletonUtils.clone(floor);
+	ceiling.receiveShadow = false;
 	ceiling.rotation.x = Math.PI * 0.5;
 	ceiling.position.set(0, appState.normalize(roomHeight), 0);
 
