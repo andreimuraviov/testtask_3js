@@ -6,6 +6,6 @@ export function addLight(scene) {
 
 	const shadowLight = new THREE.DirectionalLight( 0xffffff, 0.9 );
 	shadowLight.castShadow = true;
-	shadowLight.position.set(-2, 3, -1);
+	shadowLight.position.set(-4, 8, -2);
 	scene.add( shadowLight );
 }
