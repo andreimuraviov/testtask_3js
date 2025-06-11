@@ -1,6 +1,9 @@
 import * as THREE from 'three';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+import * as TextureUtils from 'three/addons/utils/WebGLTextureUtils.js';
+
 import config from './config.js';
-import { saveJsonToFile, loadJsonFromFile } from '../helpers/files.js';
+import { saveToFile, loadJsonFromFile } from '../helpers/files.js';
 
 class ApplicationState {
 	constructor(config) {
@@ -173,7 +176,8 @@ class ApplicationState {
 					: { value: this.textures[texture].value }
 		}
 
-		saveJsonToFile(exportObj, 'export.json');
+		const jsonString = JSON.stringify(exportObj, null, 2);
+		saveToFile(jsonString, 'application/json', 'export.json');
 	}
 
 	importFromFile(e) {
@@ -191,6 +195,25 @@ class ApplicationState {
 			this.loadTextures();
 			this.buildRoom();
 		});
+	}
+
+	exportSceneToGLB() {
+		const scene = this.scene;
+		const exporter = new GLTFExporter().setTextureUtils( TextureUtils );
+
+		const options = {
+			trs: false,
+			onlyVisible: false,
+			binary: true,
+		};
+
+		exporter.parse(scene, result => {
+			saveToFile(result, 'application/octet-stream', 'room.glb');
+		},
+		error => {
+			console.log(error);
+		},
+		options);
 	}
 
 }

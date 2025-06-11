@@ -1,6 +1,5 @@
-function saveJsonToFile(jsonObject, filename) {
-	const jsonString = JSON.stringify(jsonObject, null, 2);
-	const blob = new Blob([jsonString], { type: 'application/json' });
+function saveToFile(data, type, filename) {
+	const blob = new Blob([data], { type });
 	const url = URL.createObjectURL(blob);
 	const a = document.createElement('a');
 	a.href = url;
@@ -29,4 +28,4 @@ function loadJsonFromFile(e, callback) {
     }
 }
 
-export { saveJsonToFile, loadJsonFromFile }
+export { saveToFile, loadJsonFromFile }

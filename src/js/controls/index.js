@@ -1,6 +1,6 @@
 import { texturesControl } from "./components/texturesControl.js";
 import { wallParameterControl } from "./components/wallParameterControl.js";
-import { importExportControl } from "./components/importExportControl.js";
+import { exportImportControl } from "./components/exportImportControl.js";
 
 export function controlsSection (config) {
 	const { textures, wallParams} = config;
@@ -48,7 +48,7 @@ export function controlsSection (config) {
 	importExportHeading.setAttribute('class', 'mt-5 mb-3');
 	importExportHeading.innerHTML = 'Импорт / экспорт';
 
-	controlsSection.append(importExportHeading, importExportControl());
+	controlsSection.append(importExportHeading, exportImportControl());
 
 	return controlsSection;
 }
