@@ -144,7 +144,7 @@ class ApplicationState {
 					transparent: true, 
 					opacity: 1 
 				});
-				this.scene.getObjectByName(layer).children.forEach(item => {
+				this.scene.getObjectByName(layer).traverse(item => {
 					item.material = material.clone();
 				});
 
@@ -158,7 +158,7 @@ class ApplicationState {
 		this.textures[layer].texture = new THREE.Texture(image);
 		this.textures[layer].texture.needsUpdate = true;
 		const material = new THREE.MeshStandardMaterial({ map: this.textures[layer].texture, transparent: true, opacity: 1 });
-		this.scene.getObjectByName(layer).children.forEach(item => {
+		this.scene.getObjectByName(layer).traverse(item => {
 			item.material = material.clone();
 		});
 	}
