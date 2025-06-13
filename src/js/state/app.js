@@ -5,7 +5,7 @@ import * as TextureUtils from 'three/addons/utils/WebGLTextureUtils.js';
 import config from './config.js';
 import { saveToFile, loadJsonFromFile } from '../helpers/files.js';
 
-class ApplicationState {
+class Application {
 	constructor(config) {
 		const {
 			roomHeight,
@@ -21,6 +21,8 @@ class ApplicationState {
 
 		this._roomHeight = roomHeight;
 		this._wallThickness = wallThickness;
+
+		this.wallKeys = ['N', 'S', 'W', 'E'];
 
 		this.textures = {
 			coversOutside: {
@@ -247,8 +249,56 @@ class ApplicationState {
 		}
 	}
 
+	getWallParameters(name, type = 'walls') {
+		const k = type === 'walls' ? 0.5 : type === 'coversInside' ? 0.499 : 0.501;
+
+		const sizeX = type === 'coversOutside' 
+			? this.normalize(this.roomSizeX) + this.normalize(this.wallThickness) * 2
+			: this.normalize(this.roomSizeX);
+
+		const sizeY = type === 'coversOutside' 
+			? this.normalize(this.roomSizeY) + this.normalize(this.wallThickness) * 2
+			: this.normalize(this.roomSizeY);
+
+		const posY = type === 'walls' ? 0 : this.normalize(this.roomHeight) * 0.5;
+
+		const rotationAnnex = type === 'coversOutside' ? 0 : 1;
+
+		switch (name) {
+			case 'N':
+				return {
+					wallLength: sizeX,
+					wallHeight: this.normalize(this.roomHeight),
+					wallPosition: Array.of( 0, posY, 0 - sizeY * k ),
+					wallRotation: Math.PI * (1 - rotationAnnex),
+				}
+			case 'S':
+				return {
+					wallLength: sizeX,
+					wallHeight: this.normalize(this.roomHeight),
+					wallPosition: Array.of( 0, posY, sizeY * k ),
+					wallRotation: Math.PI * (0 - rotationAnnex),
+				}
+			case 'W':
+				return {
+					wallLength: sizeY,
+					wallHeight: this.normalize(this.roomHeight),
+					wallPosition: Array.of( 0 - sizeX * k, posY, 0 ),
+					wallRotation: Math.PI * (rotationAnnex - 0.5),
+				}
+			case 'E':
+				return {
+					wallLength: sizeY,
+					wallHeight: this.normalize(this.roomHeight),
+					wallPosition: Array.of( sizeX * k, posY, 0 ),
+					wallRotation: Math.PI * (0.5 + rotationAnnex),
+				}
+			default:
+				throw 'Invalid key';
+		}
+	}
 }
 
-const appState = new ApplicationState(config);
+const app = new Application(config);
 
-export { appState };
+export { app };

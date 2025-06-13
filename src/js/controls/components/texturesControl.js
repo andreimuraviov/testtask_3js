@@ -1,4 +1,4 @@
-import { appState } from '../../state/app.js';
+import { app } from '../../state/app.js';
 
 export function texturesControl({
 	labelName, 
@@ -62,7 +62,7 @@ export function texturesControl({
 		if (!select.value) {
 			fileInput.click();
 		} else {
-			appState[roomValue] = select.value;
+			app[roomValue] = select.value;
 		}
 	});
 
@@ -76,8 +76,8 @@ export function texturesControl({
 				image.src = event.target.result;
 
 				image.onload = function () {
-					appState[roomValue] = '';
-					appState.applyCustomImage(roomValue, image);
+					app[roomValue] = '';
+					app.applyCustomImage(roomValue, image);
 				};
 			};
 

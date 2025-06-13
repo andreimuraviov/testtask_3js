@@ -1,4 +1,4 @@
-import { appState } from '../../state/app.js';
+import { app } from '../../state/app.js';
 
 export function wallParameterControl({
 	labelName, 
@@ -17,7 +17,7 @@ export function wallParameterControl({
 		'id': labelName,
 		'type': 'number',
 		'min': '1',
-		'value': appState[roomValue],
+		'value': app[roomValue],
 		'className': 'form-control form-control-sm',
 	});
 
@@ -30,7 +30,7 @@ export function wallParameterControl({
 		if (Number(input.value) < 1) {
 			return;
 		}
-		appState[roomValue] = input.value;
+		app[roomValue] = input.value;
 	});
 
 	group.append(input, button);

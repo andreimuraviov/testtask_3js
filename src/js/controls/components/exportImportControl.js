@@ -1,4 +1,4 @@
-import { appState } from '../../state/app.js';
+import { app } from '../../state/app.js';
 
 export function exportImportControl() {
 	const controlElement = document.createElement('div');
@@ -16,12 +16,12 @@ export function exportImportControl() {
 	fileInput.setAttribute('type', 'file');
 	fileInput.style.display = 'none';
 
-	fileInput.addEventListener('change', appState.importFromFile.bind(appState), false);
+	fileInput.addEventListener('change', app.importFromFile.bind(app), false);
 
 	const dropdownContent = [
 		{
 			title: 'Сохранить настройки (json)',
-			action: appState.exportToFile.bind(appState),
+			action: app.exportToFile.bind(app),
 		},
 		{
 			title: 'Загрузить настройки (json)',
@@ -29,7 +29,7 @@ export function exportImportControl() {
 		},
 		{
 			title: 'Экспортировать в GLB',
-			action: appState.exportSceneToGLB.bind(appState),
+			action: app.exportSceneToGLB.bind(app),
 		}
 	];
 

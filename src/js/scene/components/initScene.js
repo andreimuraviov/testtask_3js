@@ -1,9 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { addGround } from './addGround.js';
-
-import { appState } from '../../state/app.js';
 import { addLight } from './addLight.js';
+import { app } from '../../state/app.js';
 
 export function initScene(sceneElement) {
 
@@ -72,7 +71,7 @@ export function initScene(sceneElement) {
 	const raycaster = new THREE.Raycaster();
 
 	sceneElement.addEventListener('mousedown', (e) => {
-		appState.resetHighlighting();
+		app.resetHighlighting();
 
 		mouse.x = e.offsetX / canvasSize.width * 2 - 1;
 		mouse.y = 0 - e.offsetY / canvasSize.height * 2 + 1;
@@ -83,7 +82,7 @@ export function initScene(sceneElement) {
 		const intersects = raycaster.intersectObjects(objectsToTest);
 
 		if (intersects.length) {
-			appState.setHighlighting(intersects[0].object);
+			app.setHighlighting(intersects[0].object);
 		}
 	})
 
