@@ -1,57 +1,65 @@
-import { texturesControl } from "./components/texturesControl.js";
-import { wallParameterControl } from "./components/wallParameterControl.js";
-import { exportImportControl } from "./components/exportImportControl.js";
+import { roomParamsSection } from "./components/roomParamsSection.js";
+import { cutoutsSection } from "./components/cutoutsSection.js";
+import { cutoutEditModal } from "./components/cutoutEditModal.js";
+
+import { app } from '../state/app.js';
 
 export function controlsSection (config) {
-	const { textures, wallParams} = config;
 
-	const headerTag = 'h4';
+	const tabs = [ 
+		{ title: 'Параметры комнаты' },
+		{ title: 'Вырезы' },
+	];
 
 	const controlsSection = document.createElement('div');
 	controlsSection.setAttribute('class', 'controls-panel-content');
 
-	// Текстуры
+	// Переключатель вкладок
+
+	const navTabs = document.createElement('ul');
+	navTabs.setAttribute('class', 'nav nav-underline');
+
+	for (let tab of tabs) {
+		const navItem = document.createElement('li');
+		navItem.className = 'nav-item';
+
+		const navLink = document.createElement('a');
+		navLink.setAttribute('class', tab === tabs[0] ? 'nav-link active' : 'nav-link');
+		navLink.setAttribute('href', 'javascript:void(0)');
+		navLink.innerHTML = tab.title;
+
+		tab.tabLink = navLink;
+
+		navLink.addEventListener('click', () => {
+			if (!navLink.classList.contains('active')) {
+				for (let tab of tabs) {
+					tab.tabLink.classList.remove('active');
+					tab.tabContent.classList.add('hidden')
+				}
+				tab.tabContent.classList.remove('hidden')
+				tab.tabLink.classList.add('active');
+			}
+		});
+
+		navItem.appendChild(navLink);
+		navTabs.appendChild(navItem);
+	}
+
+	controlsSection.append(navTabs);
+
+	// Вкладки
 	
-	const texturesHeading = document.createElement(headerTag);
-	texturesHeading.setAttribute('class', 'mb-3');
-	texturesHeading.innerHTML = 'Текстуры';
-	controlsSection.appendChild(texturesHeading);
+	const roomParams = roomParamsSection(config);
+	tabs[0].tabContent = roomParams;
+	controlsSection.appendChild(roomParams);
+	
+	const cutouts = cutoutsSection();
+	tabs[1].tabContent = cutouts;
+	cutouts.classList.add('hidden');
+	controlsSection.appendChild(cutouts);
 
-	for (let key of Object.keys(textures)) {
-		const control = texturesControl({
-			labelName: key,
-			labelTitle: textures[key].title,
-			roomValue: textures[key].roomValue,
-			items: textures[key].items,
-		});
-		control.classList.add('mb-4');
-		controlsSection.appendChild(control);
-	}
-
-	// Параметры стен
-
-	const wallParamsHeading = document.createElement(headerTag);
-	wallParamsHeading.setAttribute('class', 'mt-5 mb-3');
-	wallParamsHeading.innerHTML = 'Параметры стен';
-	controlsSection.appendChild(wallParamsHeading);
-
-	for (let key of Object.keys(wallParams)) {
-		const control = wallParameterControl({
-			labelName: key,
-			labelTitle: wallParams[key].title,
-			roomValue: wallParams[key].roomValue,
-		});
-		control.classList.add('mb-3');
-		controlsSection.appendChild(control);
-	}
-
-	// Импорт/экспорт
-
-	const importExportHeading = document.createElement(headerTag);
-	importExportHeading.setAttribute('class', 'mt-5 mb-3');
-	importExportHeading.innerHTML = 'Импорт / экспорт';
-
-	controlsSection.append(importExportHeading, exportImportControl());
+	app.cutoutEditModal = cutoutEditModal();
+	document.body.appendChild(app.cutoutEditModal);
 
 	return controlsSection;
 }

@@ -82,5 +82,31 @@ export default {
 			"title": "Толщина",
 			"roomValue": "wallThickness"
 		},
-	}
+	},
+	"cutoutParams": {
+		"cutoutName": {
+			"title": "Название",
+			"defaultValue": "Вырез"
+		},
+		"cutoutWidth": {
+			"title": "Ширина",
+			"defaultValue": 50
+		},
+		"cutoutHeight": {
+			"title": "Высота",
+			"defaultValue": 50
+		},
+		"cutoutLeft": {
+			"title": "Слева",
+			"defaultValue": 50
+		},
+		"cutoutTop": {
+			"title": "Сверху",
+			"defaultValue": 50
+		},
+		"cutoutDepth": {
+			"title": "Глубина",
+			"defaultValue": 10
+		},
+	},
 }

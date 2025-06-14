@@ -12,3 +12,11 @@
 	width: 330px;
 	margin: 0 auto;
 }
+
+.controls-panel-section {
+	padding-top: 40px;
+}
+
+.controls-panel-section.hidden {
+	display: none;
+}
