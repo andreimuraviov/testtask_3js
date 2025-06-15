@@ -1,40 +1,45 @@
 import { heading } from "./heading.js";
 import { app } from '../../state/app.js';
-import config from '../../state/config.js';
+
+import { cutoutsList } from "./cutoutsList.js";
 
 export function cutoutsSection () {
 	const controlsSection = document.createElement('div');
 	controlsSection.setAttribute('class', 'controls-panel-section');
 
-	controlsSection.appendChild(heading({ text: 'Вырезы', className: 'mb-3' }));
 
-	const button = document.createElement('button');
-	button.setAttribute('type', 'button');
-	button.setAttribute('class', 'btn btn-primary btn-sm');
-	button.disabled = true;
-	button.innerHTML = 'Добавить вырез';
+	const header = document.createElement('div');
+	header.setAttribute('class', 'd-flex flex-row');
+	
+	const button = document.createElement('a');
+	button.setAttribute('href', 'javascript: void(0)');
+	button.setAttribute('class', 'ms-auto icon-link nav-link disabled');
+	button.style.userSelect = 'none';
+	button.innerHTML = 
+	`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+  		<path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+	</svg> Добавить`;
 
 	button.addEventListener('click', () => {
-		if (app.cutoutEditModal) {
-			clearCutoutEditForm(app.cutoutEditModal);
-			const cutoutEditModal = bootstrap.Modal.getOrCreateInstance(app.cutoutEditModal);
-			cutoutEditModal.show(button);
-		}
+		if (!button.classList.contains('disabled')) app.showCutoutEditForm(button);
 	})
-	
-	controlsSection.appendChild(button);
+
+	header.append(heading({ text: 'Вырезы', className: 'mb-1' }), button);
+	controlsSection.appendChild(header);
 
 	app.addCutoutButton = button;
+	app.updateCutoutsList = updateCutoutsList(controlsSection);
+	app.updateCutoutsList();
 
 	return controlsSection;
 }
 
-function clearCutoutEditForm(form) {
-	const paramKeys = Object.keys(config.cutoutParams);
-	for (let key of paramKeys) {
-		const input = form.querySelector(`#${key}`);
-		if (input) {
-			input.value = config.cutoutParams[key].defaultValue;
+function updateCutoutsList(controlsSection) {
+	return () => {
+		if (app.cutoutsList) {
+			controlsSection.removeChild(app.cutoutsList);
 		}
+		app.cutoutsList = cutoutsList(app.cutouts);
+		controlsSection.appendChild(app.cutoutsList);
 	}
 }

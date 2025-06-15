@@ -2,6 +2,12 @@ export function cutoutEditForm() {
 	const container = document.createElement('div');
 	container.setAttribute('class', 'container-fluid');
 
+	const inputId = document.createElement('input');
+	inputId.setAttribute('id', 'cutoutId');
+	inputId.setAttribute('type', 'hidden');
+
+	container.appendChild(inputId);
+
 	// Название
 
 	const rowName = document.createElement('div');

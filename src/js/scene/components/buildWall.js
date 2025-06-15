@@ -14,14 +14,20 @@ export class buildWall {
 		this.wallLength = wallLength;
 		this.wallHeight = wallHeight;
 		this.wallThickness = wallThickness;
-		this.texture = texture;
 
 		const geometry = new THREE.BufferGeometry();
 		geometry.setIndex( new THREE.BufferAttribute(this.getIndices(), 1));
 		geometry.setAttribute( 'position', new THREE.BufferAttribute( this.getVertices(), 3 ) );
 		geometry.setAttribute( 'uv', new THREE.BufferAttribute( this.getUV(), 2 ) );
 
-		const material = new THREE.MeshStandardMaterial({ map: texture, transparent: true, opacity: 1 });
+		const materialParams = { transparent: true, opacity: 1};
+		if (texture) {
+			materialParams.map = texture;
+		} else {
+			materialParams.color = 0xffffff;
+		}
+
+		const material = new THREE.MeshStandardMaterial(materialParams);
 		const mesh = new Brush( geometry, material );
 		mesh.castShadow = true;
 

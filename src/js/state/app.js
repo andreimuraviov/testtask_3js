@@ -46,6 +46,8 @@ class Application {
 
 		this.textureLoader = null;
 		this.loadTextures();
+
+		this.cutouts = [];
 	}
 
 	loadTextures() {
@@ -247,7 +249,7 @@ class Application {
 		this.setWallOpacity(wall.name, 0.6);
 
 		this.selectedWall = wall.name;
-   		this.addCutoutButton.disabled = false;
+   		this.addCutoutButton.classList.remove('nav-link', 'disabled');
 	}
 
 	resetHighlighting() {
@@ -266,7 +268,7 @@ class Application {
 		}
 
 		this.selectedWall = '';
-   		this.addCutoutButton.disabled = true;
+   		this.addCutoutButton.classList.add('nav-link', 'disabled');		
 	}
 
 	getWallParameters(name, type = 'walls') {
@@ -318,14 +320,60 @@ class Application {
 		}
 	}
 
+	addCutout() {}
+
+	updateCutoutsList() {}
+
 	addCutouts(cutoutParams) {
-		cutoutParams.wallKey = this.selectedWall;
-		app.resetHighlighting();
-		
-		this.addCutout(cutoutParams);
+		if (cutoutParams && cutoutParams.cutoutId === '') {
+			cutoutParams.wallKey = this.selectedWall;
+			cutoutParams.cutoutId = this.cutouts.length;
+
+			this.resetHighlighting();
+			
+			this.addCutout(cutoutParams);
+			this.cutouts.push(cutoutParams);
+
+			this.updateCutoutsList();
+		} else if (cutoutParams) {
+			cutoutParams.cutoutId = Number(cutoutParams.cutoutId);
+			const cutoutIndex = this.cutouts.findIndex(item => item.cutoutId === cutoutParams.cutoutId);
+			if (cutoutIndex !== -1) {
+				this.cutouts[cutoutIndex] = { ...this.cutouts[cutoutIndex], ...cutoutParams };
+				this.clearScene()
+				this.buildRoom();
+				this.updateCutoutsList()
+			}
+		} else if (this.cutouts.length) {
+			this.cutouts.forEach(item => {
+				this.addCutout(item);
+			});
+		}
 	}
 
-	addCutout() {}
+	showCutoutEditForm(target, values) {
+		if (this.cutoutEditModal) {
+			this.fillCutoutEditForm(values);
+			const cutoutEditModal = bootstrap.Modal.getOrCreateInstance(app.cutoutEditModal);
+			cutoutEditModal.show(target);
+		}
+	}
+
+	fillCutoutEditForm(values) {
+		values = values || config.cutoutParams;
+		const paramKeys = Object.keys(values);
+		for (let key of paramKeys) {
+			const input = this.cutoutEditModal.querySelector(`#${key}`);
+			if (input) {
+				input.value = 'cutoutId' in values ? values[key] : values[key].defaultValue;
+			}
+		}
+		if (!('cutoutId' in values)) {
+			this.cutoutEditModal.querySelector('#cutoutId').value = '';
+			this.cutoutEditModal.querySelector('#cutoutName').value = 
+				`${config.cutoutParams.cutoutName.defaultValue} ${this.cutouts.length + 1}`;
+		}
+	}
 }
 
 const app = new Application(config);

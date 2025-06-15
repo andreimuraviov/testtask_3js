@@ -69,7 +69,9 @@ export function cutoutEditModal() {
 
 function collectFormValues(form) {
 	const paramKeys = Object.keys(config.cutoutParams);
-	const result = {};
+	const result = {
+		cutoutId: form.querySelector('#cutoutId').value
+	};
 	for (let key of paramKeys) {
 		const input = form.querySelector(`#${key}`);
 		if (input) {
