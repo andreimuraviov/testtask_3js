@@ -23,6 +23,7 @@ class Application {
 		this._wallThickness = wallThickness;
 
 		this.wallKeys = ['N', 'S', 'W', 'E'];
+		this.selectedWall = '';
 
 		this.textures = {
 			coversOutside: {
@@ -60,7 +61,7 @@ class Application {
 
 	clearScene() {
 		if (this.scene) {
-			for (let group of ['floor', 'coversInside', 'coversOutside', 'walls', 'higlighter']) {
+			for (let group of ['floor', 'coversInside', 'coversOutside', 'walls', 'highlighters']) {
 				this.scene.getObjectByName(group) && this.scene.getObjectByName(group).clear();
 			}
 		}
@@ -128,8 +129,6 @@ class Application {
 
 	buildRoom() {}
 
-	resetHighlighting() {}
-
 	getTextureLoader() {
 		return this.textureLoader || new THREE.TextureLoader();
 	}
@@ -147,7 +146,9 @@ class Application {
 					opacity: 1 
 				});
 				this.scene.getObjectByName(layer).traverse(item => {
-					item.material = material.clone();
+					if (item.type !== 'Group') {
+						item.material = material.clone();
+					}
 				});
 
 			});
@@ -161,7 +162,9 @@ class Application {
 		this.textures[layer].texture.needsUpdate = true;
 		const material = new THREE.MeshStandardMaterial({ map: this.textures[layer].texture, transparent: true, opacity: 1 });
 		this.scene.getObjectByName(layer).traverse(item => {
-			item.material = material.clone();
+			if (item.type !== 'Group') {
+				item.material = material.clone();
+			}
 		});
 	}
 
@@ -219,34 +222,51 @@ class Application {
 		options);
 	}
 
+	setWallOpacity(wallSide, value) {
+		for (const group of ['walls', 'coversOutside', 'coversInside']) {
+			const material = this.scene.getObjectByName(group).getObjectByName(wallSide).material;
+			if (Array.isArray(material)) {
+				material.forEach(element => {
+					element.opacity = value;
+				});
+			} else {
+				material.opacity = value;
+			}
+		}
+	}
+
 	setHighlighting(wall) {
 		const scene = this.scene;
-		const edges = new THREE.EdgesGeometry( wall.geometry ); 
-		const lines = new THREE.LineSegments(edges, new THREE.LineBasicMaterial( { linewidth: 1, color: 0x0d6efd } ) );
-		lines.name = wall.name;
-		lines.position.set(wall.position.x, wall.position.y, wall.position.z);
-		lines.setRotationFromEuler(wall.rotation);
-		lines.scale.set(1.001, 1.001, 1.001);
-		scene.getObjectByName('higlighter').add( lines );
 
-		wall.material.opacity = 0.5;
-		for (const group of ['coversOutside', 'coversInside']) {
-			scene.getObjectByName(group).getObjectByName(wall.name).material.opacity = 0.5;	
-		}
+		scene.getObjectByName('highlighters').traverse(item => {
+			if (item.type === 'LineSegments' && item.name === wall.name) {
+				item.material.opacity = 1;
+			}
+		});
+
+		this.setWallOpacity(wall.name, 0.6);
+
+		this.selectedWall = wall.name;
+   		this.addCutoutButton.disabled = false;
 	}
 
 	resetHighlighting() {
 		const scene = this.scene;
 		let highlightSide = '';
-		const highlightGroup = scene.getObjectByName('higlighter');
 
-		if (highlightGroup.children.length > 0) {
-			highlightSide = highlightGroup.children[0].name;
-			for (const group of ['walls', 'coversOutside', 'coversInside']) {
-				scene.getObjectByName(group).getObjectByName(highlightSide).material.opacity = 1;	
+		scene.getObjectByName('highlighters').traverse(item => {
+			if (item.type === 'LineSegments' && item.material.opacity === 1) {
+				highlightSide = item.name;
+				item.material.opacity = 0;
 			}
-			scene.getObjectByName('higlighter').clear();
+		});
+
+		if (highlightSide) {
+			this.setWallOpacity(highlightSide, 1);
 		}
+
+		this.selectedWall = '';
+   		this.addCutoutButton.disabled = true;
 	}
 
 	getWallParameters(name, type = 'walls') {
@@ -297,6 +317,15 @@ class Application {
 				throw 'Invalid key';
 		}
 	}
+
+	addCutouts(cutoutParams) {
+		cutoutParams.wallKey = this.selectedWall;
+		app.resetHighlighting();
+		
+		this.addCutout(cutoutParams);
+	}
+
+	addCutout() {}
 }
 
 const app = new Application(config);

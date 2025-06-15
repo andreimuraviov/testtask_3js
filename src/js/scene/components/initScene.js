@@ -19,15 +19,13 @@ export function initScene(sceneElement) {
 	const scene = new THREE.Scene();
 	scene.background = new THREE.Color().setRGB( 0.25, 0.27, 0.3 );
 
-	addLight(scene);
-	addGround(scene);
-
 	const groups = [
+		'ambience',
 		'floor',
 		'walls',
 		'coversInside',
 		'coversOutside',
-		'higlighter'
+		'highlighters'
 	];
 
 	for (let groupName of groups) {
@@ -35,6 +33,9 @@ export function initScene(sceneElement) {
 		group.name = groupName;
 		scene.add(group);
 	}
+
+	addLight(scene.getObjectByName('ambience'));
+	addGround(scene.getObjectByName('ambience'));
 
 	const renderer = new THREE.WebGLRenderer( { antialias: true } );
 	renderer.setSize( width, height );

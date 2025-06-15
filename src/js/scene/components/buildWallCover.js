@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Brush } from 'three-bvh-csg';
 
 export class buildWallCover {
 	constructor({
@@ -13,7 +14,7 @@ export class buildWallCover {
 		const geometry = new THREE.PlaneGeometry( wallLength, wallHeight );
 		const material = new THREE.MeshStandardMaterial({ map: texture, transparent: true, opacity: 1 });
 
-		const cover = new THREE.Mesh( geometry, material );
+		const cover = new Brush( geometry, material );
 		
 		cover.rotation.y = wallRotation;
 		cover.position.set(...wallPosition);

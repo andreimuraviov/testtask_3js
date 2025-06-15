@@ -117,7 +117,6 @@ export function cutoutEditForm() {
 
 	rowDepthInput.appendChild(inputDepth);
 
-
 	rowName.append(rowNameTitle, rowNameInput);
 	rowSize.append(rowSizeTitle, rowSizeInput);
 	rowPosition.append(rowPositionTitle, rowPositionInput);

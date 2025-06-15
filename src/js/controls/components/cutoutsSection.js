@@ -2,7 +2,6 @@ import { heading } from "./heading.js";
 import { app } from '../../state/app.js';
 import config from '../../state/config.js';
 
-
 export function cutoutsSection () {
 	const controlsSection = document.createElement('div');
 	controlsSection.setAttribute('class', 'controls-panel-section');
@@ -12,6 +11,7 @@ export function cutoutsSection () {
 	const button = document.createElement('button');
 	button.setAttribute('type', 'button');
 	button.setAttribute('class', 'btn btn-primary btn-sm');
+	button.disabled = true;
 	button.innerHTML = 'Добавить вырез';
 
 	button.addEventListener('click', () => {
@@ -23,6 +23,8 @@ export function cutoutsSection () {
 	})
 	
 	controlsSection.appendChild(button);
+
+	app.addCutoutButton = button;
 
 	return controlsSection;
 }

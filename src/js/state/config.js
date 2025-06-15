@@ -1,6 +1,6 @@
 export default {
 	"roomSize": {
-		"roomHeight": 260,
+		"roomHeight": 270,
 		"roomSizeX": 400,
 		"roomSizeY": 300,
 		"wallThickness": 10,

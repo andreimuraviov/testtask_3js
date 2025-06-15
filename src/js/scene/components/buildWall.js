@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Brush } from 'three-bvh-csg';
 
 export class buildWall {
 	constructor({
@@ -21,7 +22,7 @@ export class buildWall {
 		geometry.setAttribute( 'uv', new THREE.BufferAttribute( this.getUV(), 2 ) );
 
 		const material = new THREE.MeshStandardMaterial({ map: texture, transparent: true, opacity: 1 });
-		const mesh = new THREE.Mesh( geometry, material );
+		const mesh = new Brush( geometry, material );
 		mesh.castShadow = true;
 
 		mesh.rotation.y = wallRotation;
@@ -34,7 +35,7 @@ export class buildWall {
 	getVertices() {
 		const vertices = new Float32Array(36);
 
-		for (let i = 0; i < 2; i++) {
+		for (let i of [0, 1]) {
 			for (let j = 0; j < 6; j++) {
 				if (j === 0) {
 					vertices[i * 6 * 3 + j * 3] = 0 - this.wallLength / 2 - this.wallThickness;

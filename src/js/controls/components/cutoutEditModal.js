@@ -1,5 +1,6 @@
 import { cutoutEditForm } from "./cutoutEditForm.js";
 import config from '../../state/config.js';
+import { app } from '../../state/app.js';
 
 export function cutoutEditModal() {
 	const modal = document.createElement('div');
@@ -57,8 +58,10 @@ export function cutoutEditModal() {
 	modalApplyBtn.addEventListener('click', () => {
 		const cutoutParams = collectFormValues(modal);
 		const cutoutEditModal = bootstrap.Modal.getOrCreateInstance(modal);
+
+		modalApplyBtn.blur();
 		cutoutEditModal.hide(modalApplyBtn);
-		console.log(cutoutParams);
+		app.addCutouts(cutoutParams);
 	});
 
 	return modal;
@@ -70,7 +73,7 @@ function collectFormValues(form) {
 	for (let key of paramKeys) {
 		const input = form.querySelector(`#${key}`);
 		if (input) {
-			result[key] = input.value;
+			result[key] = key === 'cutoutName' ? input.value : Number(input.value);
 		}
 	}
 	return result;
