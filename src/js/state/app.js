@@ -67,6 +67,7 @@ class Application {
 				this.scene.getObjectByName(group) && this.scene.getObjectByName(group).clear();
 			}
 		}
+		this.clearSelectedWall();
 	}
 
 	get roomHeight() {
@@ -174,7 +175,8 @@ class Application {
 		const exportObj = {
 			roomHeight: this._roomHeight,
 			wallThickness: this._wallThickness,
-			textures: {}
+			textures: {},
+			cutouts: [ ...this.cutouts ],
 		}
 
 		for (let texture of ['coversOutside', 'coversInside', 'floor']) {
@@ -192,6 +194,7 @@ class Application {
 		loadJsonFromFile(e, importedObj => {
 			this._roomHeight = importedObj.roomHeight;
 			this._wallThickness = importedObj.wallThickness;
+			this.cutouts = [ ...importedObj.cutouts ];
 
 			for (let texture of ['coversOutside', 'coversInside', 'floor']) {
 				this.textures[texture].value = '';
@@ -237,6 +240,11 @@ class Application {
 		}
 	}
 
+	clearSelectedWall() {
+		this.selectedWall = '';
+   		this.addCutoutButton.classList.add('nav-link', 'disabled');		
+	}
+
 	setHighlighting(wall) {
 		const scene = this.scene;
 
@@ -267,8 +275,7 @@ class Application {
 			this.setWallOpacity(highlightSide, 1);
 		}
 
-		this.selectedWall = '';
-   		this.addCutoutButton.classList.add('nav-link', 'disabled');		
+		this.clearSelectedWall();	
 	}
 
 	getWallParameters(name, type = 'walls') {
@@ -333,8 +340,6 @@ class Application {
 			
 			this.addCutout(cutoutParams);
 			this.cutouts.push(cutoutParams);
-
-			this.updateCutoutsList();
 		} else if (cutoutParams) {
 			cutoutParams.cutoutId = Number(cutoutParams.cutoutId);
 			const cutoutIndex = this.cutouts.findIndex(item => item.cutoutId === cutoutParams.cutoutId);
@@ -342,13 +347,13 @@ class Application {
 				this.cutouts[cutoutIndex] = { ...this.cutouts[cutoutIndex], ...cutoutParams };
 				this.clearScene()
 				this.buildRoom();
-				this.updateCutoutsList()
 			}
 		} else if (this.cutouts.length) {
 			this.cutouts.forEach(item => {
 				this.addCutout(item);
 			});
 		}
+		this.updateCutoutsList();
 	}
 
 	showCutoutEditForm(target, values) {
@@ -372,6 +377,7 @@ class Application {
 			this.cutoutEditModal.querySelector('#cutoutId').value = '';
 			this.cutoutEditModal.querySelector('#cutoutName').value = 
 				`${config.cutoutParams.cutoutName.defaultValue} ${this.cutouts.length + 1}`;
+			this.cutoutEditModal.querySelector('#cutoutDepth').value = this.wallThickness;
 		}
 	}
 }

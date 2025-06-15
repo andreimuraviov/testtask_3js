@@ -31,7 +31,7 @@ export function buildRoom () {
 		const { wall } = new buildWall({
 			...app.getWallParameters(key, 'walls'),
 			wallThickness: app.normalize(app.wallThickness),
-			// texture: app.textures['walls'].texture,
+			texture: app.textures['walls'].texture,
 			name: key,
 		});
 		scene.getObjectByName('walls').add(wall);

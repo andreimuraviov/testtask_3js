@@ -30,6 +30,7 @@ export class buildWall {
 		const material = new THREE.MeshStandardMaterial(materialParams);
 		const mesh = new Brush( geometry, material );
 		mesh.castShadow = true;
+		mesh.receiveShadow = true;
 
 		mesh.rotation.y = wallRotation;
 		mesh.position.set(...wallPosition);

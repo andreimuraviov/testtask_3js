@@ -30,13 +30,13 @@ export function addCutout(cutoutParams) {
 }
 
 function createCutout({	wallKey, cutoutWidth, cutoutHeight, cutoutDepth }) {
-	let cutoutSize = [ app.normalize(cutoutWidth), app.normalize(cutoutHeight), app.normalize(cutoutDepth) * 2 ];
+	let cutoutSize = [ app.normalize(cutoutWidth), app.normalize(cutoutHeight), app.normalize(cutoutDepth) * 1.25 ];
 	if (wallKey === 'W' || wallKey === 'E') {
 		cutoutSize = cutoutSize.reverse();
 	}
 
 	const geometry = new THREE.BoxGeometry( ...cutoutSize );
-	const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+	const material = new THREE.MeshStandardMaterial({ map: app.textures['walls'].texture });
 
 	const mesh = new Brush( geometry, material );
 	
@@ -46,17 +46,17 @@ function createCutout({	wallKey, cutoutWidth, cutoutHeight, cutoutDepth }) {
 	return mesh;
 }
 
-function getCutoutPosition({ wallKey, cutoutWidth, cutoutHeight, cutoutLeft, cutoutTop }) {
+function getCutoutPosition({ wallKey, cutoutWidth, cutoutHeight, cutoutLeft, cutoutTop, cutoutDepth }) {
 
 	const shiftX = wallKey === 'N' || wallKey === 'S'
-			? app.normalize((app.roomSizeX - cutoutWidth) / 2 - cutoutLeft)
-			: app.normalize(app.roomSizeX / 2) + 0.05;
+		? app.normalize((app.roomSizeX - cutoutWidth) / 2 - cutoutLeft)
+		: app.normalize((app.roomSizeX + cutoutDepth) / 2);
 
 	const shiftY = app.normalize(app.roomHeight - cutoutTop - (cutoutHeight / 2));
 
 	const shiftZ = wallKey === 'N' || wallKey === 'S'
-			? app.normalize(app.roomSizeY / 2) + 0.05
-			: app.normalize((app.roomSizeY - cutoutWidth) / 2 - cutoutLeft);
+		? app.normalize((app.roomSizeY + cutoutDepth) / 2)
+		: app.normalize((app.roomSizeY - cutoutWidth) / 2 - cutoutLeft);
 
 	switch (wallKey) {
 		case 'N':
