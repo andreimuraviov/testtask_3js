@@ -163,15 +163,7 @@ class Application {
 	}
 
 	getWallsMaterial() {
-		const texturesIndex = [
-			'coversOutside',
-			'coversOutside',
-			'walls',
-			'walls',
-			'coversInside',
-			'coversOutside',
-		];
-		return texturesIndex.map(item => {
+		return [ 'coversOutside', 'coversInside', 'walls' ].map(item => {
 				return new THREE.MeshStandardMaterial({ map: this.textures[item].texture, transparent: true, opacity: 1});
 			}
 		);
@@ -319,46 +311,38 @@ class Application {
 		this.clearSelectedWall();	
 	}
 
-	getWallParameters(name, type = 'walls') {
-		const k = 0.5;
-
-		const sizeX = this.normalize(this.roomSizeX + this.wallThickness * 2) * 0.999;
-		const sizeY = this.normalize(this.roomSizeY + this.wallThickness * 2) * 0.999;
-
-		const shiftX = this.normalize(this.roomSizeX + this.wallThickness);
-		const shiftZ = this.normalize(this.roomSizeY + this.wallThickness);
-
+	getWallParameters(name) {
+		const roomSizeX = this.normalize(this.roomSizeX);
+		const roomSizeY = this.normalize(this.roomSizeY);
 		const wallHeight = this.normalize(this.roomHeight);
-
-		const posY = wallHeight * 0.5;
 
 		switch (name) {
 			case 'N':
 				return {
-					wallLength: sizeX,
+					wallLength: roomSizeX,
 					wallHeight: wallHeight,
-					wallPosition: Array.of( 0, posY, 0 - shiftZ * k ),
+					wallPosition: Array.of( 0, 0, 0 - roomSizeY / 2 ),
 					wallRotation: 0,
 				}
 			case 'S':
 				return {
-					wallLength: sizeX,
+					wallLength: roomSizeX,
 					wallHeight: wallHeight,
-					wallPosition: Array.of( 0, posY, shiftZ * k ),
+					wallPosition: Array.of( 0, 0, roomSizeY / 2 ),
 					wallRotation: Math.PI * -1,
 				}
 			case 'W':
 				return {
-					wallLength: sizeY,
+					wallLength: roomSizeY,
 					wallHeight: wallHeight,
-					wallPosition: Array.of( 0 - shiftX * k, posY, 0 ),
+					wallPosition: Array.of( 0 - roomSizeX / 2, 0, 0 ),
 					wallRotation: Math.PI * 0.5,
 				}
 			case 'E':
 				return {
-					wallLength: sizeY,
+					wallLength: roomSizeY,
 					wallHeight: wallHeight,
-					wallPosition: Array.of( shiftX * k, posY, 0 ),
+					wallPosition: Array.of( roomSizeX / 2, 0, 0 ),
 					wallRotation: Math.PI * -0.5,
 				}
 			default:
