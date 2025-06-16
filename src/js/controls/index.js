@@ -52,6 +52,8 @@ export function controlsSection (config) {
 	const roomParams = roomParamsSection(config);
 	tabs[0].tabContent = roomParams;
 	controlsSection.appendChild(roomParams);
+
+	app.roomParamsElement = roomParams;
 	
 	const cutouts = cutoutsSection();
 	tabs[1].tabContent = cutouts;

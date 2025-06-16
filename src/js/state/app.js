@@ -238,6 +238,7 @@ class Application {
 
 			this.loadTextures();
 			this.rebuildRoom();
+			this.updateParameters();
 		});
 	}
 
@@ -401,6 +402,21 @@ class Application {
 				`${config.cutoutParams.cutoutName.defaultValue} ${this.cutouts.length + 1}`;
 			this.cutoutEditModal.querySelector('#cutoutDepth').value = this.wallThickness;
 		}
+	}
+
+	updateParameters() {
+		const updateControlsMap = new Map([
+			...Object.keys(config.wallParams).map(key => Array.of(key, config.wallParams[key].roomValue)),
+			...Object.keys(config.textures).map(key => Array.of(key, config.textures[key].roomValue)),
+		]);
+
+		updateControlsMap.forEach((value, key, map) => {
+			const input = this.roomParamsElement.querySelector(`#${key}`);
+			if (input) {
+				input.value = app[value];
+				input.dispatchEvent(new Event('change'));
+			}
+		});
 	}
 }
 
