@@ -61,9 +61,14 @@ class Application {
 		return value * this.ratio;
 	}
 
+	rebuildRoom() {
+		this.clearScene();
+		this.buildRoom();
+	};
+
 	clearScene() {
 		if (this.scene) {
-			for (let group of ['floor', 'coversInside', 'coversOutside', 'walls', 'highlighters']) {
+			for (let group of ['floor', 'walls', 'highlighters']) {
 				this.scene.getObjectByName(group) && this.scene.getObjectByName(group).clear();
 			}
 		}
@@ -79,8 +84,7 @@ class Application {
 
 		if (this._roomHeight !== numericValue) {
 			this._roomHeight = numericValue;
-			this.clearScene();
-			this.buildRoom();
+			this.rebuildRoom();
 		}
 	}
 
@@ -93,8 +97,7 @@ class Application {
 
 		if (this._wallThickness !== numericValue) {
 			this._wallThickness = numericValue;
-			this.clearScene()
-			this.buildRoom();
+			this.rebuildRoom();
 		}
 	}
 
@@ -127,13 +130,59 @@ class Application {
 	set coverUrlFloor(value) {
 		if (this.textures.floor.value !== value) {
 			this.textures.floor.value = value;
-			this.updateWallCovers('floor', value);		}
+			this.updateFloorCover(value);		
+		}
 	}
 
 	buildRoom() {}
 
 	getTextureLoader() {
 		return this.textureLoader || new THREE.TextureLoader();
+	}
+
+	updateFloorCover(value) {
+		this.resetHighlighting();
+		if (value) {
+			const textureLoader = this.getTextureLoader();
+			this.textures['floor'].src = undefined;
+			textureLoader.load(value, texture => {
+				this.textures['floor'].texture = texture;
+				const material = new THREE.MeshStandardMaterial({ 
+					map: texture, 
+					transparent: true, 
+					opacity: 1 
+				});
+				this.scene.getObjectByName('floor').traverse(item => {
+					if (item.type !== 'Group' && item.name !== 'text') {
+						item.material = material.clone();
+					}
+				});
+
+			});
+		}
+	}
+
+	getWallsMaterial() {
+		const texturesIndex = [
+			'coversOutside',
+			'coversOutside',
+			'walls',
+			'walls',
+			'coversInside',
+			'coversOutside',
+		];
+		return texturesIndex.map(item => {
+				return new THREE.MeshStandardMaterial({ map: this.textures[item].texture, transparent: true, opacity: 1});
+			}
+		);
+	}
+
+	updateWallCoverMaterial() {
+		this.scene.getObjectByName('walls').traverse(item => {
+			if (item.type !== 'Group') {
+				item.material = this.getWallsMaterial();
+			}
+		});
 	}
 
 	updateWallCovers(layer, value) {
@@ -143,17 +192,11 @@ class Application {
 			this.textures[layer].src = undefined;
 			textureLoader.load(value, texture => {
 				this.textures[layer].texture = texture;
-				const material = new THREE.MeshStandardMaterial({ 
-					map: texture, 
-					transparent: true, 
-					opacity: 1 
-				});
-				this.scene.getObjectByName(layer).traverse(item => {
-					if (item.type !== 'Group') {
-						item.material = material.clone();
-					}
-				});
-
+				if (this.cutouts.length) {
+					this.rebuildRoom();
+				} else {
+					this.updateWallCoverMaterial();
+				}
 			});
 		}
 	}
@@ -163,12 +206,11 @@ class Application {
 		this.textures[layer].src = image.getAttribute('src');
 		this.textures[layer].texture = new THREE.Texture(image);
 		this.textures[layer].texture.needsUpdate = true;
-		const material = new THREE.MeshStandardMaterial({ map: this.textures[layer].texture, transparent: true, opacity: 1 });
-		this.scene.getObjectByName(layer).traverse(item => {
-			if (item.type !== 'Group') {
-				item.material = material.clone();
-			}
-		});
+		if (this.cutouts.length) {
+			this.rebuildRoom();
+		} else {
+			this.updateWallCoverMaterial();
+		}
 	}
 
 	exportToFile() {
@@ -202,9 +244,8 @@ class Application {
 				this.textures[texture] = { ...this.textures[texture], ...importedObj.textures[texture] };
 			}
 
-			this.clearScene();
 			this.loadTextures();
-			this.buildRoom();
+			this.rebuildRoom();
 		});
 	}
 
@@ -228,7 +269,7 @@ class Application {
 	}
 
 	setWallOpacity(wallSide, value) {
-		for (const group of ['walls', 'coversOutside', 'coversInside']) {
+		for (const group of ['walls']) {
 			const material = this.scene.getObjectByName(group).getObjectByName(wallSide).material;
 			if (Array.isArray(material)) {
 				material.forEach(element => {
@@ -279,48 +320,46 @@ class Application {
 	}
 
 	getWallParameters(name, type = 'walls') {
-		const k = type === 'walls' ? 0.5 : type === 'coversInside' ? 0.499 : 0.501;
+		const k = 0.5;
 
-		const sizeX = type === 'coversOutside' 
-			? this.normalize(this.roomSizeX) + this.normalize(this.wallThickness) * 2
-			: this.normalize(this.roomSizeX);
+		const sizeX = this.normalize(this.roomSizeX + this.wallThickness * 2) * 0.999;
+		const sizeY = this.normalize(this.roomSizeY + this.wallThickness * 2) * 0.999;
 
-		const sizeY = type === 'coversOutside' 
-			? this.normalize(this.roomSizeY) + this.normalize(this.wallThickness) * 2
-			: this.normalize(this.roomSizeY);
+		const shiftX = this.normalize(this.roomSizeX + this.wallThickness);
+		const shiftZ = this.normalize(this.roomSizeY + this.wallThickness);
 
-		const posY = type === 'walls' ? 0 : this.normalize(this.roomHeight) * 0.5;
+		const wallHeight = this.normalize(this.roomHeight);
 
-		const rotationAnnex = type === 'coversOutside' ? 0 : 1;
+		const posY = wallHeight * 0.5;
 
 		switch (name) {
 			case 'N':
 				return {
 					wallLength: sizeX,
-					wallHeight: this.normalize(this.roomHeight),
-					wallPosition: Array.of( 0, posY, 0 - sizeY * k ),
-					wallRotation: Math.PI * (1 - rotationAnnex),
+					wallHeight: wallHeight,
+					wallPosition: Array.of( 0, posY, 0 - shiftZ * k ),
+					wallRotation: 0,
 				}
 			case 'S':
 				return {
 					wallLength: sizeX,
-					wallHeight: this.normalize(this.roomHeight),
-					wallPosition: Array.of( 0, posY, sizeY * k ),
-					wallRotation: Math.PI * (0 - rotationAnnex),
+					wallHeight: wallHeight,
+					wallPosition: Array.of( 0, posY, shiftZ * k ),
+					wallRotation: Math.PI * -1,
 				}
 			case 'W':
 				return {
 					wallLength: sizeY,
-					wallHeight: this.normalize(this.roomHeight),
-					wallPosition: Array.of( 0 - sizeX * k, posY, 0 ),
-					wallRotation: Math.PI * (rotationAnnex - 0.5),
+					wallHeight: wallHeight,
+					wallPosition: Array.of( 0 - shiftX * k, posY, 0 ),
+					wallRotation: Math.PI * 0.5,
 				}
 			case 'E':
 				return {
 					wallLength: sizeY,
-					wallHeight: this.normalize(this.roomHeight),
-					wallPosition: Array.of( sizeX * k, posY, 0 ),
-					wallRotation: Math.PI * (0.5 + rotationAnnex),
+					wallHeight: wallHeight,
+					wallPosition: Array.of( shiftX * k, posY, 0 ),
+					wallRotation: Math.PI * -0.5,
 				}
 			default:
 				throw 'Invalid key';
@@ -345,8 +384,7 @@ class Application {
 			const cutoutIndex = this.cutouts.findIndex(item => item.cutoutId === cutoutParams.cutoutId);
 			if (cutoutIndex !== -1) {
 				this.cutouts[cutoutIndex] = { ...this.cutouts[cutoutIndex], ...cutoutParams };
-				this.clearScene()
-				this.buildRoom();
+				this.rebuildRoom();
 			}
 		} else if (this.cutouts.length) {
 			this.cutouts.forEach(item => {

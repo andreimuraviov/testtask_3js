@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Brush } from 'three-bvh-csg';
+import { app } from '../../state/app';
 
 export class buildWall {
 	constructor({
@@ -8,27 +9,25 @@ export class buildWall {
 		wallPosition,
 		wallRotation,
 		wallThickness,
-		texture,
 		name,
 	}) {
 		this.wallLength = wallLength;
 		this.wallHeight = wallHeight;
 		this.wallThickness = wallThickness;
 
-		const geometry = new THREE.BufferGeometry();
-		geometry.setIndex( new THREE.BufferAttribute(this.getIndices(), 1));
-		geometry.setAttribute( 'position', new THREE.BufferAttribute( this.getVertices(), 3 ) );
-		geometry.setAttribute( 'uv', new THREE.BufferAttribute( this.getUV(), 2 ) );
+		// const geometry = new THREE.BufferGeometry();
+		// geometry.setIndex( new THREE.BufferAttribute(this.getIndices(), 1));
+		// geometry.setAttribute( 'position', new THREE.BufferAttribute( this.getVertices(), 3 ) );
+		// geometry.setAttribute( 'uv', new THREE.BufferAttribute( this.getUV(), 2 ) );
+		// geometry.groups = this.getGroups();
 
-		const materialParams = { transparent: true, opacity: 1};
-		if (texture) {
-			materialParams.map = texture;
-		} else {
-			materialParams.color = 0xffffff;
-		}
+		const geometry = new THREE.BoxGeometry(
+			this.wallLength,
+			this.wallHeight,
+			this.wallThickness
+		);
 
-		const material = new THREE.MeshStandardMaterial(materialParams);
-		const mesh = new Brush( geometry, material );
+		const mesh = new Brush( geometry, app.getWallsMaterial() );
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
 
@@ -84,6 +83,14 @@ export class buildWall {
 			9, 2, 8,   // f18
 			9, 3, 2,   // f19
 		]);
+	}
+
+	getGroups() {
+		return Array.of(
+			{ start: 0, count: 60, materialIndex: 0 },
+			{ start: 20, count: 20, materialIndex: 1 },
+			{ start: 40, count: 20, materialIndex: 2 }
+		);
 	}
 
 	getUV() {

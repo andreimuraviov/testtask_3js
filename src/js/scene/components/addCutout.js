@@ -6,31 +6,31 @@ import { app } from '../../state/app.js';
 
 export function addCutout(cutoutParams) {
 	const scene = app.scene;
-	const cutoutLayers = ['walls','coversInside', 'coversOutside'];
 
 	const cutout = createCutout({ ...cutoutParams });
 	cutout.position.set(...getCutoutPosition({ ...cutoutParams }));
 	cutout.updateMatrixWorld();
+	scene.add(cutout);
 
-	for (let layer of cutoutLayers) {
-		const originalBrush = scene.getObjectByName(layer).getObjectByName(cutoutParams.wallKey);
-		const clonedBrush = SkeletonUtils.clone(originalBrush);
-		clonedBrush.updateMatrixWorld();
+	const originalBrush = scene.getObjectByName('walls').getObjectByName(cutoutParams.wallKey);
+	const clonedBrush = SkeletonUtils.clone(originalBrush);
+	clonedBrush.updateMatrixWorld();
 
-		const evaluator = new Evaluator();
-		evaluator.attributes = [ 'position', 'uv' ];
-		const result = evaluator.evaluate( clonedBrush, cutout, SUBTRACTION );
-		result.name = originalBrush.name;
-		result.material.forEach(element => { element.transparent = true; });
-		result.castShadow = true;
+	const evaluator = new Evaluator();
+	evaluator.attributes = [ 'position', 'uv' ];
+	const result = evaluator.evaluate( clonedBrush, cutout, SUBTRACTION );
+	result.name = originalBrush.name;
+	result.material.forEach(element => { element.transparent = true; });
+	result.castShadow = true;
 
-		originalBrush.removeFromParent();
-		scene.getObjectByName(layer).add(result);
-	}
+	originalBrush.removeFromParent();
+	cutout.removeFromParent();
+
+	scene.getObjectByName('walls').add(result);
 }
 
 function createCutout({	wallKey, cutoutWidth, cutoutHeight, cutoutDepth }) {
-	let cutoutSize = [ app.normalize(cutoutWidth), app.normalize(cutoutHeight), app.normalize(cutoutDepth) * 1.25 ];
+	let cutoutSize = [ app.normalize(cutoutWidth), app.normalize(cutoutHeight), app.normalize(cutoutDepth) * 1.1 ];
 	if (wallKey === 'W' || wallKey === 'E') {
 		cutoutSize = cutoutSize.reverse();
 	}

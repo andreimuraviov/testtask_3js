@@ -23,8 +23,6 @@ export function initScene(sceneElement) {
 		'ambience',
 		'floor',
 		'walls',
-		'coversInside',
-		'coversOutside',
 		'highlighters'
 	];
 
@@ -78,7 +76,7 @@ export function initScene(sceneElement) {
 		mouse.y = 0 - e.offsetY / canvasSize.height * 2 + 1;
 
 		raycaster.setFromCamera(mouse, camera);
-		const objectsToTest = scene.getObjectByName('walls').children;
+		const objectsToTest = app.scene.getObjectByName('walls').children;
 
 		const intersects = raycaster.intersectObjects(objectsToTest);
 

@@ -3,7 +3,6 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import { addFloor } from "./addFloor.js";
 import { buildWall } from "./buildWall.js";
 import { buildHighlighter } from "./buildHighlighter.js";
-import { buildWallCover } from "./buildWallCover.js";
 import { addCutout } from "./addCutout.js";
 import { app } from '../../state/app.js';
 
@@ -31,22 +30,12 @@ export function buildRoom () {
 		const { wall } = new buildWall({
 			...app.getWallParameters(key, 'walls'),
 			wallThickness: app.normalize(app.wallThickness),
-			texture: app.textures['walls'].texture,
 			name: key,
 		});
 		scene.getObjectByName('walls').add(wall);
 
 		const higlighter = buildHighlighter(wall);
 		scene.getObjectByName('highlighters').add(higlighter);
-
-		for (let coverType of ['coversInside', 'coversOutside']) {
-			const { wallCover } = new buildWallCover({
-				...app.getWallParameters(key, coverType),
-				texture: app.textures[coverType].texture,
-				name: key,
-			});
-			scene.getObjectByName(coverType).add(wallCover);
-		}
 	}
 
 	app.addCutout = addCutout;
