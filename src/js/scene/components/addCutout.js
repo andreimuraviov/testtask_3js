@@ -52,7 +52,7 @@ function getCutoutPosition({ wallKey, cutoutWidth, cutoutHeight, cutoutLeft, cut
 		? app.normalize((app.roomSizeX - cutoutWidth) / 2 - cutoutLeft)
 		: app.normalize((app.roomSizeX + cutoutDepth) / 2);
 
-	const shiftY = app.normalize(app.roomHeight - cutoutTop - (cutoutHeight / 2));
+	const shiftY = app.normalize(app.wallParameters[wallKey].wallHeight - cutoutTop - (cutoutHeight / 2));
 
 	const shiftZ = wallKey === 'N' || wallKey === 'S'
 		? app.normalize((app.roomSizeY + cutoutDepth) / 2)

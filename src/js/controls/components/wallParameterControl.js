@@ -17,20 +17,21 @@ export function wallParameterControl({
 		'id': labelName,
 		'type': 'number',
 		'min': '1',
-		'value': app[roomValue],
 		'className': 'form-control form-control-sm',
 	});
+	input.disabled = true;
 
 	const button = document.createElement('button');
 	button.setAttribute('type', 'button');
 	button.setAttribute('class', 'btn btn-primary btn-sm');
 	button.innerHTML = 'Применить';
+	button.disabled = true;
 
 	button.addEventListener('click', () => {
 		if (Number(input.value) < 1) {
 			return;
 		}
-		app[roomValue] = input.value;
+		app.setWallParameterValue(labelName, input.value);
 	});
 
 	group.append(input, button);

@@ -76,11 +76,13 @@ export default {
 	"wallParams": {
 		"wallParamsHeight": {
 			"title": "Высота",
-			"roomValue": "roomHeight"
+			"roomValue": "roomHeight",
+			"wallValue": "wallHeight",
 		},
 		"wallParamsThick": {
 			"title": "Толщина",
-			"roomValue": "wallThickness"
+			"roomValue": "wallThickness",
+			"wallValue": "wallThickness",
 		},
 	},
 	"cutoutParams": {

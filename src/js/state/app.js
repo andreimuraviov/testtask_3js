@@ -25,6 +25,8 @@ class Application {
 		this.wallKeys = ['N', 'S', 'W', 'E'];
 		this.selectedWall = '';
 
+		this.wallParameters = this.initWallParameters();
+
 		this.textures = {
 			coversOutside: {
 				type: 'coverUrlOutside',
@@ -50,6 +52,24 @@ class Application {
 		this.cutouts = [];
 	}
 
+	initWallParameters() {
+		const parameters = {};
+		this.wallKeys.forEach(key => {
+			parameters[key] = {
+				wallHeight: this.roomHeight,
+				wallThickness: this.wallThickness,
+			}
+		});
+		return parameters;
+	}
+
+	setWallParameterValue(key, value) {
+		const selectedWall = this.selectedWall;
+
+		this.wallParameters[selectedWall][config.wallParams[key].wallValue] = value;
+		this.rebuildRoom(() => { this.setHighlighting(selectedWall) });
+	}
+
 	loadTextures() {
 		for (let key of Object.keys(this.textures)) {
 			const textureLoader = this.getTextureLoader();
@@ -61,9 +81,13 @@ class Application {
 		return value * this.ratio;
 	}
 
-	rebuildRoom() {
+	rebuildRoom(callback) {
 		this.clearScene();
 		this.buildRoom();
+
+		if (typeof callback === 'function') {
+			callback();
+		}
 	};
 
 	clearScene() {
@@ -208,7 +232,7 @@ class Application {
 	exportToFile() {
 		const exportObj = {
 			roomHeight: this._roomHeight,
-			wallThickness: this._wallThickness,
+			wallParameters: this.wallParameters,
 			textures: {},
 			cutouts: [ ...this.cutouts ],
 		}
@@ -228,7 +252,8 @@ class Application {
 		loadJsonFromFile(e, importedObj => {
 			this._roomHeight = importedObj.roomHeight;
 			this._wallThickness = importedObj.wallThickness;
-			this.cutouts = [ ...importedObj.cutouts ];
+			this.wallParameters = importedObj.wallParameters || this.initWallParameters();
+			this.cutouts = importedObj.cutouts || [];
 
 			for (let texture of ['coversOutside', 'coversInside', 'floor']) {
 				this.textures[texture].value = '';
@@ -276,22 +301,44 @@ class Application {
 
 	clearSelectedWall() {
 		this.selectedWall = '';
-   		this.addCutoutButton.classList.add('nav-link', 'disabled');		
+   		this.addCutoutButton.classList.add('nav-link', 'disabled');
+
+		const updateControlsMap =  new Map(Object.keys(config.wallParams).map(key => Array.of(key, config.wallParams[key].wallValue)));
+
+		updateControlsMap.forEach((value, key) => {
+			const input = this.roomParamsElement.querySelector(`#${key}`);
+			if (input) {
+				input.value = '';
+				input.disabled = true;
+				input.nextSibling.disabled = true;
+			}
+		});
 	}
 
-	setHighlighting(wall) {
+	setHighlighting(wallName) {
 		const scene = this.scene;
 
 		scene.getObjectByName('highlighters').traverse(item => {
-			if (item.type === 'LineSegments' && item.name === wall.name) {
+			if (item.type === 'LineSegments' && item.name === wallName) {
 				item.material.opacity = 1;
 			}
 		});
 
-		this.setWallOpacity(wall.name, 0.6);
+		this.setWallOpacity(wallName, 0.7);
 
-		this.selectedWall = wall.name;
+		this.selectedWall = wallName;
    		this.addCutoutButton.classList.remove('nav-link', 'disabled');
+
+		const updateControlsMap =  new Map(Object.keys(config.wallParams).map(key => Array.of(key, config.wallParams[key].wallValue)));
+
+		updateControlsMap.forEach((value, key) => {
+			const input = this.roomParamsElement.querySelector(`#${key}`);
+			if (input) {
+				input.value = app.wallParameters[wallName][value] || '';
+				input.disabled = false;
+				input.nextSibling.disabled = false;
+			}
+		});
 	}
 
 	resetHighlighting() {
@@ -309,40 +356,44 @@ class Application {
 			this.setWallOpacity(highlightSide, 1);
 		}
 
-		this.clearSelectedWall();	
+		this.clearSelectedWall();
 	}
 
 	getWallParameters(name) {
 		const roomSizeX = this.normalize(this.roomSizeX);
 		const roomSizeY = this.normalize(this.roomSizeY);
-		const wallHeight = this.normalize(this.roomHeight);
+
+		const wallParams = {
+			wallHeight: this.normalize(this.wallParameters[name].wallHeight),
+			wallThickness: this.normalize(this.wallParameters[name].wallThickness),
+		}
 
 		switch (name) {
 			case 'N':
 				return {
+					...wallParams,
 					wallLength: roomSizeX,
-					wallHeight: wallHeight,
 					wallPosition: Array.of( 0, 0, 0 - roomSizeY / 2 ),
 					wallRotation: 0,
 				}
 			case 'S':
 				return {
+					...wallParams,
 					wallLength: roomSizeX,
-					wallHeight: wallHeight,
 					wallPosition: Array.of( 0, 0, roomSizeY / 2 ),
 					wallRotation: Math.PI * -1,
 				}
 			case 'W':
 				return {
+					...wallParams,
 					wallLength: roomSizeY,
-					wallHeight: wallHeight,
 					wallPosition: Array.of( 0 - roomSizeX / 2, 0, 0 ),
 					wallRotation: Math.PI * 0.5,
 				}
 			case 'E':
 				return {
+					...wallParams,
 					wallLength: roomSizeY,
-					wallHeight: wallHeight,
 					wallPosition: Array.of( roomSizeX / 2, 0, 0 ),
 					wallRotation: Math.PI * -0.5,
 				}
@@ -360,7 +411,7 @@ class Application {
 			cutoutParams.wallKey = this.selectedWall;
 			cutoutParams.cutoutId = this.cutouts.length;
 
-			this.resetHighlighting();
+			// this.resetHighlighting();
 			
 			this.addCutout(cutoutParams);
 			this.cutouts.push(cutoutParams);
@@ -400,17 +451,14 @@ class Application {
 			this.cutoutEditModal.querySelector('#cutoutId').value = '';
 			this.cutoutEditModal.querySelector('#cutoutName').value = 
 				`${config.cutoutParams.cutoutName.defaultValue} ${this.cutouts.length + 1}`;
-			this.cutoutEditModal.querySelector('#cutoutDepth').value = this.wallThickness;
+			this.cutoutEditModal.querySelector('#cutoutDepth').value = this.wallParameters[this.selectedWall].wallThickness;
 		}
 	}
 
 	updateParameters() {
-		const updateControlsMap = new Map([
-			...Object.keys(config.wallParams).map(key => Array.of(key, config.wallParams[key].roomValue)),
-			...Object.keys(config.textures).map(key => Array.of(key, config.textures[key].roomValue)),
-		]);
+		const updateControlsMap = new Map(Object.keys(config.textures).map(key => Array.of(key, config.textures[key].roomValue)));
 
-		updateControlsMap.forEach((value, key, map) => {
+		updateControlsMap.forEach((value, key) => {
 			const input = this.roomParamsElement.querySelector(`#${key}`);
 			if (input) {
 				input.value = app[value];

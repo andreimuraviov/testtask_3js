@@ -19,17 +19,16 @@ export function buildRoom () {
 		text: `${roomSizeX * roomSizeY * 0.0001} м²`
 	});
 
-	const ceiling = SkeletonUtils.clone(floor);
-	ceiling.receiveShadow = false;
-	ceiling.rotation.x = Math.PI * 0.5;
-	ceiling.position.set(0, app.normalize(roomHeight), 0);
+	// const ceiling = SkeletonUtils.clone(floor);
+	// ceiling.receiveShadow = false;
+	// ceiling.rotation.x = Math.PI * 0.5;
+	// ceiling.position.set(0, app.normalize(roomHeight), 0);
 
-	scene.getObjectByName('floor').add( floor, ceiling );
+	scene.getObjectByName('floor').add( floor );
 
 	for (let key of app.wallKeys) {
 		const { wall } = new buildWall({
 			...app.getWallParameters(key, 'walls'),
-			wallThickness: app.normalize(app.wallThickness),
 			name: key,
 		});
 		scene.getObjectByName('walls').add(wall);

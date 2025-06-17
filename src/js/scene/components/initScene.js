@@ -81,7 +81,7 @@ export function initScene(sceneElement) {
 		const intersects = raycaster.intersectObjects(objectsToTest);
 
 		if (intersects.length) {
-			app.setHighlighting(intersects[0].object);
+			app.setHighlighting(intersects[0].object.name);
 		}
 	})
 

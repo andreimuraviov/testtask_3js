@@ -24,9 +24,9 @@ export function roomParamsSection (config) {
 		controlsSection.appendChild(control);
 	}
 
-	// Параметры стен
+	// Параметры стены
 
-	controlsSection.appendChild(heading({ text: 'Параметры стен' }));
+	controlsSection.appendChild(heading({ text: 'Параметры стены' }));
 
 	for (let key of Object.keys(wallParams)) {
 		const control = wallParameterControl({
