@@ -30,7 +30,7 @@ export function addCutout(cutoutParams) {
 }
 
 function createCutout({	wallKey, cutoutWidth, cutoutHeight, cutoutDepth }) {
-	let cutoutSize = [ app.normalize(cutoutWidth), app.normalize(cutoutHeight), app.normalize(cutoutDepth) * 1.1 ];
+	let cutoutSize = [ app.normalize(cutoutWidth), app.normalize(cutoutHeight), app.normalize(cutoutDepth) + 0.01 ];
 	if (wallKey === 'W' || wallKey === 'E') {
 		cutoutSize = cutoutSize.reverse();
 	}
