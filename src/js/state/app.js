@@ -320,7 +320,8 @@ class Application {
 
 		scene.getObjectByName('highlighters').traverse(item => {
 			if (item.type === 'LineSegments' && item.name === wallName) {
-				item.material.opacity = 1;
+				item.material = new THREE.LineBasicMaterial({ color: 0x0d6efd });
+				item.scale.set(1.001, 1.001, 1.001);
 			}
 		});
 
@@ -348,7 +349,8 @@ class Application {
 		scene.getObjectByName('highlighters').traverse(item => {
 			if (item.type === 'LineSegments' && item.material.opacity === 1) {
 				highlightSide = item.name;
-				item.material.opacity = 0;
+				item.material = new THREE.LineBasicMaterial({ color: 0x725a48, transparent: true, opacity: 0.9 });
+				item.scale.set(1, 1, 1);
 			}
 		});
 
