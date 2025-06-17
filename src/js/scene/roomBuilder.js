@@ -1,5 +1,5 @@
-import { initScene } from "./components/initScene.js";
-import { buildRoom } from './components/roomBuilder.js';
+import { initScene } from "./initScene.js";
+import { buildRoom } from './buildRoom.js';
 
 import { app } from '../state/app.js';
 

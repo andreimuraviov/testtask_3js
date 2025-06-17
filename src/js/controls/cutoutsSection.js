@@ -1,5 +1,5 @@
-import { heading } from "./heading.js";
-import { app } from '../../state/app.js';
+import { heading } from "../helpers/heading.js";
+import { app } from '../state/app.js';
 
 import { cutoutsList } from "./cutoutsList.js";
 

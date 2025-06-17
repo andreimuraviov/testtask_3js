@@ -1,6 +1,6 @@
 import { cutoutEditForm } from "./cutoutEditForm.js";
-import config from '../../state/config.js';
-import { app } from '../../state/app.js';
+import config from '../state/config.js';
+import { app } from '../state/app.js';
 
 export function cutoutEditModal() {
 	const modal = document.createElement('div');

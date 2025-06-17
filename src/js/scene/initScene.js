@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { addGround } from './addGround.js';
 import { addLight } from './addLight.js';
-import { app } from '../../state/app.js';
+import { app } from '../state/app.js';
 
 export function initScene(sceneElement) {
 

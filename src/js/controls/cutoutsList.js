@@ -1,4 +1,4 @@
-import { app } from '../../state/app.js';
+import { app } from '../state/app.js';
 
 export function cutoutsList(list) {
 	if (!list || !list.length) {

@@ -1,9 +1,8 @@
-import { controlsSection } from "./js/controls/index.js";
-import { roomBuilder } from "./js/scene/index.js";
-import config from './js/state/config.js';
+import { controlsSection } from "./js/controls/controlsSection.js";
+import { roomBuilder } from "./js/scene/roomBuilder.js";
 
 const controlsEl = document.querySelector('.js-controls-panel');
-controlsEl.replaceChildren(controlsSection(config));
+controlsEl.replaceChildren(controlsSection());
 
 const sceneEl = document.querySelector('.js-scene');
 roomBuilder(sceneEl);

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import { SUBTRACTION, Brush, Evaluator } from 'three-bvh-csg';
 
-import { app } from '../../state/app.js';
+import { app } from '../state/app.js';
 
 export function addCutout(cutoutParams) {
 	const scene = app.scene;

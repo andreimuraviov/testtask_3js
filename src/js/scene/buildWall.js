@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { Brush } from 'three-bvh-csg';
-import { app } from '../../state/app';
+import { app } from '../state/app';
 
 export class buildWall {
 	constructor({
@@ -39,10 +39,10 @@ export class buildWall {
 	getVertices(name) {
 		const vertices = new Float32Array(36);
 
-		//Толщина стены слева
+		// Толщина стены слева
 		const rightNeighbourThickness = app.normalize(app.wallParameters[this.wallNeighbours(name)[0]].wallThickness);
 
-		//Толщина стены справа
+		// Толщина стены справа
 		const leftNeighbourThickness = app.normalize(app.wallParameters[this.wallNeighbours(name)[1]].wallThickness);
 
 		for (let i of [0, 1]) { // сначала нижние точки, затем верхние
@@ -59,7 +59,7 @@ export class buildWall {
 					// Точки слева
 					vertices[i * 6 * 3 + j * 3] = this.wallLength / 2;
 				} else {
-					//Левый угол
+					// Левый угол
 					vertices[i * 6 * 3 + j * 3] = this.wallLength / 2 + rightNeighbourThickness;
 				}
 				

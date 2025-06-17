@@ -1,10 +1,10 @@
-import { roomParamsSection } from "./components/roomParamsSection.js";
-import { cutoutsSection } from "./components/cutoutsSection.js";
-import { cutoutEditModal } from "./components/cutoutEditModal.js";
+import { roomParamsSection } from "./roomParamsSection.js";
+import { cutoutsSection } from "./cutoutsSection.js";
+import { cutoutEditModal } from "./cutoutEditModal.js";
 
 import { app } from '../state/app.js';
 
-export function controlsSection (config) {
+export function controlsSection () {
 
 	const tabs = [ 
 		{ title: 'Параметры комнаты' },
@@ -49,7 +49,7 @@ export function controlsSection (config) {
 
 	// Вкладки
 	
-	const roomParams = roomParamsSection(config);
+	const roomParams = roomParamsSection();
 	tabs[0].tabContent = roomParams;
 	controlsSection.appendChild(roomParams);
 

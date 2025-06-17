@@ -1,10 +1,10 @@
-import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
+// import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 import { addFloor } from "./addFloor.js";
 import { buildWall } from "./buildWall.js";
 import { buildHighlighter } from "./buildHighlighter.js";
 import { addCutout } from "./addCutout.js";
-import { app } from '../../state/app.js';
+import { app } from '../state/app.js';
 
 export function buildRoom () {
 

@@ -1,9 +1,11 @@
-import { heading } from "./heading.js";
+import { heading } from "../helpers/heading.js";
 import { texturesControl } from "./texturesControl.js";
 import { wallParameterControl } from "./wallParameterControl.js";
 import { exportImportControl } from "./exportImportControl.js";
 
-export function roomParamsSection (config) {
+import config from '../state/config.js';
+
+export function roomParamsSection () {
 	const { textures, wallParams } = config;
 
 	const controlsSection = document.createElement('div');
