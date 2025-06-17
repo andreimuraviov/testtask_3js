@@ -17,7 +17,7 @@ export class buildWall {
 
 		const geometry = new THREE.BufferGeometry();
 		geometry.setIndex( this.getIndices() );
-		geometry.setAttribute( 'position', new THREE.BufferAttribute( this.getVertices(), 3 ) );
+		geometry.setAttribute( 'position', new THREE.BufferAttribute( this.getVertices(name), 3 ) );
 		geometry.setAttribute( 'uv', new THREE.BufferAttribute( this.getUV(), 2 ) );
 
 		for (let group of this.getGroups()) {
@@ -36,26 +36,57 @@ export class buildWall {
 		this.wall = mesh;
 	}
 
-	getVertices() {
+	getVertices(name) {
 		const vertices = new Float32Array(36);
 
-		for (let i of [0, 1]) {
+		//Толщина стены слева
+		const rightNeighbourThickness = app.normalize(app.wallParameters[this.wallNeighbours(name)[0]].wallThickness);
+
+		//Толщина стены справа
+		const leftNeighbourThickness = app.normalize(app.wallParameters[this.wallNeighbours(name)[1]].wallThickness);
+
+		for (let i of [0, 1]) { // сначала нижние точки, затем верхние
 			for (let j = 0; j < 6; j++) {
+				
+				// координата X
 				if (j === 0) {
-					vertices[i * 6 * 3 + j * 3] = 0 - this.wallLength / 2 - this.wallThickness;
+					// Правый угол
+					vertices[i * 6 * 3 + j * 3] = 0 - this.wallLength / 2 - leftNeighbourThickness;
 				} else if (j === 1 || j === 5) {
+					// Точки справа
 					vertices[i * 6 * 3 + j * 3] = 0 - this.wallLength / 2;
 				} else if (j === 2 || j === 4) {
+					// Точки слева
 					vertices[i * 6 * 3 + j * 3] = this.wallLength / 2;
 				} else {
-					vertices[i * 6 * 3 + j * 3] = this.wallLength / 2 + this.wallThickness;
+					//Левый угол
+					vertices[i * 6 * 3 + j * 3] = this.wallLength / 2 + rightNeighbourThickness;
 				}
+				
+				// координата Y
 				vertices[i * 6 * 3 + j * 3 + 1] = i * this.wallHeight;
+				
+				// координата Z
 				vertices[i * 6 * 3 + j * 3 + 2] = j < 4 ? 0 - this.wallThickness : 0;
 			}
 		}
 
 		return vertices;
+	}
+
+	wallNeighbours(name) {
+		switch (name) {
+			case 'N':
+				return ['E', 'W'];
+			case 'S':
+				return ['W', 'E'];
+			case 'W':
+				return ['N', 'S'];
+			case 'E':
+				return ['S', 'N'];
+			default:
+				throw 'Invalid key';
+		}
 	}
 
 	getIndices() {
